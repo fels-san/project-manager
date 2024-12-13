@@ -1,11 +1,8 @@
-import { useRef } from "react";
+import { useRef, useContext } from "react";
 
-export default function Project({
-  onAddTask,
-  onDeleteTask,
-  onDeleteProject,
-  project,
-}) {
+import { ProjectManagementContext } from "../store/project-management-context";
+
+export default function Project({ project }) {
   function formatDate(date) {
     const options = {
       year: "numeric",
@@ -15,14 +12,17 @@ export default function Project({
     return date.toLocaleDateString("en-US", options);
   }
 
-  const taskCounter = useRef(0);
+  const { addTask, deleteTask, deleteProject } = useContext(
+    ProjectManagementContext
+  );
 
+  const taskCounter = useRef(0);
   const taskTitle = useRef();
 
   function handleAddTask() {
     const title = taskTitle.current.value.trim();
     if (title) {
-      onAddTask(project.id, title, taskCounter.current++);
+      addTask(project.id, title, taskCounter.current++);
       taskTitle.current.value = "";
       taskTitle.current.focus();
     }
@@ -31,11 +31,8 @@ export default function Project({
   return (
     <div className="w-4/5 flex flex-col pt-32 pl-10 pr-44">
       <header className="flex flex-row justify-between">
-        <h2 className="text-stone-700 text-3xl font-bold">{project.title}</h2>
-        <button
-          onClick={() => onDeleteProject(project.id)}
-          className="text-base"
-        >
+        <h2 className="w-4/5 break-words text-stone-700 text-3xl font-bold">{project.title}</h2>
+        <button onClick={() => deleteProject(project.id)} className="text-base">
           Delete
         </button>
       </header>
@@ -57,7 +54,7 @@ export default function Project({
             return (
               <div key={task.id} className="flex flex-row justify-between">
                 <p>{task.title}</p>
-                <button onClick={() => onDeleteTask(project.id, task.id)}>
+                <button onClick={() => deleteTask(project.id, task.id)}>
                   Clear
                 </button>
               </div>

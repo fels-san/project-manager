@@ -1,6 +1,11 @@
-import NoProjects from "../assets/no-projects.png";
+import { useContext } from "react";
 
-export default function EmptyPage({ onCreateProject }) {
+import NoProjects from "../assets/no-projects.png";
+import { ProjectManagementContext } from "../store/project-management-context";
+
+export default function EmptyPage() {
+  const { createProject } = useContext(ProjectManagementContext);
+
   return (
     <div className="w-4/5 flex flex-col items-center py-36">
       <img src={NoProjects} alt="Notebook" className="w-20 h-20" />
@@ -10,7 +15,10 @@ export default function EmptyPage({ onCreateProject }) {
       <p className="text-stone-500">
         Select a project or get started with a new one
       </p>
-      <button onClick={onCreateProject} className="bg-stone-700 text-stone-400 rounded-md px-4 py-2 my-7">
+      <button
+        onClick={createProject}
+        className="bg-stone-700 text-stone-400 rounded-md px-4 py-2 my-7"
+      >
         Create new project
       </button>
     </div>

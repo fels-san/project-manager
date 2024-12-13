@@ -1,7 +1,11 @@
-import { useRef, useState } from "react";
+import { useRef, useContext } from "react";
 
-export default function NewProject({ onCancelProject, onAddProject }) {
+import { ProjectManagementContext } from "../store/project-management-context";
+
+export default function NewProject() {
   const label = "uppercase font-bold text-stone-600 mb-2";
+
+  const { cancelProject, addProject } = useContext(ProjectManagementContext);
 
   const title = useRef();
   const description = useRef();
@@ -12,7 +16,7 @@ export default function NewProject({ onCancelProject, onAddProject }) {
       title.current.value && description.current.value && date.current.value;
     if (!valid) return;
 
-    onAddProject({
+    addProject({
       title: title.current.value,
       description: description.current.value,
       date: new Date(date.current.value),
@@ -24,7 +28,7 @@ export default function NewProject({ onCancelProject, onAddProject }) {
   return (
     <div className="w-4/5 flex flex-col pt-32 pl-10 pr-44">
       <div className="flex flex-row justify-end gap-3 mb-2">
-        <button onClick={onCancelProject}>Cancel</button>
+        <button onClick={cancelProject}>Cancel</button>
         <button
           onClick={handleSave}
           className="bg-stone-700 text-stone-50 rounded-md px-6 py-2"
