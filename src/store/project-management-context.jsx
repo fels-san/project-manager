@@ -1,4 +1,4 @@
-import { createContext, useState, useRef } from "react";
+import { createContext, useReducer } from "react";
 
 export const ProjectManagementContext = createContext({
   projects: [],
@@ -13,86 +13,161 @@ export const ProjectManagementContext = createContext({
   deleteTask: () => {},
 });
 
+function projectManagerReducer(state, action) {
+  if (action.type === "CREATE_PROJECT") {
+    const updatedProjects = state.projects.map((project) => ({
+      ...project,
+      status: "unselected",
+    }));
+
+    return {
+      ...state,
+      projects: updatedProjects,
+      actionType: "creating",
+    };
+  }
+
+  if (action.type === "ADD_PROJECT") {
+    const updatedProjects = [
+      ...state.projects,
+      { ...action.payload, id: state.projectCounter },
+    ];
+    return {
+      ...state,
+      projects: updatedProjects,
+      projectCounter: state.projectCounter + 1,
+      actionType: "none",
+    };
+  }
+
+  if (action.type === "CANCEL_PROJECT") {
+    return {
+      ...state,
+      actionType: "none",
+    };
+  }
+
+  if (action.type === "SELECT_PROJECT") {
+    const updatedProjects = state.projects.map((project) => ({
+      ...project,
+      status: project.id === action.payload ? "selected" : "unselected",
+    }));
+
+    return {
+      ...state,
+      projects: updatedProjects,
+      actionType: "editing",
+    };
+  }
+
+  if (action.type === "DELETE_PROJECT") {
+    const updatedProjects = state.projects.filter(
+      (project) => project.id !== action.payload
+    );
+    return { ...state, projects: updatedProjects, actionType: "none" };
+  }
+
+  if (action.type === "ADD_TASK") {
+    const updatedProjects = state.projects.map((project) =>
+      project.id === action.payload.projectId
+        ? {
+            ...project,
+            tasks: [
+              ...project.tasks,
+              { title: action.payload.taskTitle, id: action.payload.taskId },
+            ],
+          }
+        : project
+    );
+    return { ...state, projects: updatedProjects };
+  }
+
+  if (action.type === "DELETE_TASK") {
+    const updatedProjects = state.projects.map((project) =>
+      project.id === action.payload.projectId
+        ? {
+            ...project,
+            tasks: project.tasks.filter(
+              (task) => task.id !== action.payload.taskId
+            ),
+          }
+        : project
+    );
+    return { ...state, projects: updatedProjects };
+  }
+}
+
 export default function ProjectManagementContextProvider({ children }) {
-  const [projects, setProjects] = useState([]);
-  const [actionType, setActionType] = useState("none");
 
-  const projectCounter = useRef(0);
-
-  const selectedProject = projects.find((item) => item.status === "selected");
+  const [projectManagerState, projectManagerDispatch] = useReducer(
+    projectManagerReducer,
+    {
+      projects: [],
+      actionType: "none",
+      projectCounter: 0,
+    }
+  );
 
   function handleAddProject(project) {
-    setProjects((prevProjects) => {
-      const updatedProjects = [
-        ...prevProjects,
-        { ...project, id: projectCounter.current++ },
-      ];
-      return updatedProjects;
+    projectManagerDispatch({
+      type: "ADD_PROJECT",
+      payload: project,
     });
-    setActionType("none");
   }
 
   function handleCreateProject() {
-    setProjects((prevProjects) =>
-      prevProjects.map((project) => ({
-        ...project,
-        status: "unselected",
-      }))
-    );
-    setActionType("creating");
+    projectManagerDispatch({
+      type: "CREATE_PROJECT",
+    });
   }
 
   function handleCancelProject() {
-    setActionType("none");
+    projectManagerDispatch({
+      type: "CANCEL_PROJECT",
+    });
   }
 
   function handleSelectProject(selectedId) {
-    setProjects((prevProjects) =>
-      prevProjects.map((project) => ({
-        ...project,
-        status: project.id === selectedId ? "selected" : "unselected",
-      }))
-    );
-    setActionType("editing");
+    projectManagerDispatch({
+      type: "SELECT_PROJECT",
+      payload: selectedId,
+    });
   }
 
   function handleDeleteProject(removedProjectId) {
-    setActionType("none");
-    setProjects((prevProjects) =>
-      prevProjects.filter((project) => project.id !== removedProjectId)
-    );
+    projectManagerDispatch({
+      type: "DELETE_PROJECT",
+      payload: removedProjectId,
+    });
   }
 
   function handleAddTask(projectId, taskTitle, taskId) {
-    setProjects((prevProjects) =>
-      prevProjects.map((project) =>
-        project.id === projectId
-          ? {
-              ...project,
-              tasks: [...project.tasks, { title: taskTitle, id: taskId }],
-            }
-          : project
-      )
-    );
+    projectManagerDispatch({
+      type: "ADD_TASK",
+      payload: {
+        projectId,
+        taskTitle,
+        taskId,
+      },
+    });
   }
 
   function handleDeleteTask(projectId, taskId) {
-    setProjects((prevProjects) =>
-      prevProjects.map((project) =>
-        project.id === projectId
-          ? {
-              ...project,
-              tasks: project.tasks.filter((task) => task.id !== taskId),
-            }
-          : project
-      )
-    );
+    projectManagerDispatch({
+      type: "DELETE_TASK",
+      payload: {
+        projectId,
+        taskId,
+      },
+    });
   }
 
   const ctxValue = {
-    projects,
-    selectedProject,
-    actionType,
+    projects: projectManagerState.projects,
+    selectedProject: projectManagerState.projects.find(
+      (item) => item.status === "selected"
+    ),
+    actionType: projectManagerState.actionType,
     createProject: handleCreateProject,
     selectProject: handleSelectProject,
     cancelProject: handleCancelProject,
