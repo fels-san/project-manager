@@ -4,7 +4,7 @@ export default function Sidebar({
   projects,
 }) {
   return (
-    <div className="w-1/5 h-full bg-stone-900 px-6 py-12 rounded-tr-lg">
+    <aside className="w-1/5 h-full bg-stone-900 px-6 py-12 rounded-tr-lg">
       <h2 className="text-stone-50 uppercase text-xl font-bold">
         Your projects
       </h2>
@@ -29,6 +29,6 @@ export default function Sidebar({
           </button>
         );
       })}
-    </div>
+    </aside>
   );
 }
