@@ -30,7 +30,7 @@ export default function Project({ project }) {
   return (
     <div className="box-border w-4/5 flex flex-col pt-32 pl-10 pr-44 overflow-y-auto">
       <header className="flex flex-row justify-between">
-        <h2 className="w-4/5 break-words text-stone-700 text-3xl font-bold">
+        <h2 className="w-4/5 break-words text-stone-700 text-3xl font-bold whitespace-pre-wrap">
           {project.title}
         </h2>
         <div className="flex flex-col items-end text-right">
@@ -51,7 +51,7 @@ export default function Project({ project }) {
         </div>
       </header>
       <p className="text-stone-400 my-2">{formatDate(project.date)}</p>
-      <p>{project.description}</p>
+      <p className="whitespace-pre-wrap">{project.description}</p>
       <hr className="mt-4 border-0 text-stone-300 bg-stone-300 h-0.5" />
       <h2 className="text-stone-700 text-3xl font-bold my-3">Tasks</h2>
       <div>
@@ -67,7 +67,7 @@ export default function Project({ project }) {
           {project.tasks.map((task) => {
             return (
               <div key={task.id} className="flex flex-row justify-between">
-                <p>{task.title}</p>
+                <p className="whitespace-pre-wrap">{task.title}</p>
                 <button onClick={() => deleteTask(project.id, task.id)}>
                   Clear
                 </button>
