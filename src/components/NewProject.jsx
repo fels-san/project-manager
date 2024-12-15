@@ -20,7 +20,8 @@ export default function NewProject() {
       title: title.current.value,
       description: description.current.value,
       date: new Date(date.current.value),
-      status: "unselected",
+      status: "current",
+      selected: false,
       tasks: [],
     });
   }

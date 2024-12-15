@@ -8,6 +8,7 @@ export const ProjectManagementContext = createContext({
   selectProject: () => {},
   cancelProject: () => {},
   addProject: () => {},
+  changeProjectStatus: () => {},
   deleteProject: () => {},
   addTask: () => {},
   deleteTask: () => {},
@@ -17,7 +18,7 @@ function projectManagerReducer(state, action) {
   if (action.type === "CREATE_PROJECT") {
     const updatedProjects = state.projects.map((project) => ({
       ...project,
-      status: "unselected",
+      selected: false,
     }));
 
     return {
@@ -50,7 +51,7 @@ function projectManagerReducer(state, action) {
   if (action.type === "SELECT_PROJECT") {
     const updatedProjects = state.projects.map((project) => ({
       ...project,
-      status: project.id === action.payload ? "selected" : "unselected",
+      selected: project.id === action.payload ? true : false,
     }));
 
     return {
@@ -65,6 +66,22 @@ function projectManagerReducer(state, action) {
       (project) => project.id !== action.payload
     );
     return { ...state, projects: updatedProjects, actionType: "none" };
+  }
+
+  if (action.type === "CHANGE_PROJECT_STATUS") {
+    const updatedProjects = state.projects.map((project) =>
+      project.id === action.payload
+        ? {
+            ...project,
+            status: project.status === "current" ? "completed" : "current",
+          }
+        : project
+    );
+    return {
+      ...state,
+      projects: updatedProjects,
+      actionType: "editing",
+    };
   }
 
   if (action.type === "ADD_TASK") {
@@ -98,7 +115,6 @@ function projectManagerReducer(state, action) {
 }
 
 export default function ProjectManagementContextProvider({ children }) {
-
   const [projectManagerState, projectManagerDispatch] = useReducer(
     projectManagerReducer,
     {
@@ -134,6 +150,13 @@ export default function ProjectManagementContextProvider({ children }) {
     });
   }
 
+  function handleChangeProjectStatus(projectId) {
+    projectManagerDispatch({
+      type: "CHANGE_PROJECT_STATUS",
+      payload: projectId,
+    });
+  }
+
   function handleDeleteProject(removedProjectId) {
     projectManagerDispatch({
       type: "DELETE_PROJECT",
@@ -165,13 +188,14 @@ export default function ProjectManagementContextProvider({ children }) {
   const ctxValue = {
     projects: projectManagerState.projects,
     selectedProject: projectManagerState.projects.find(
-      (item) => item.status === "selected"
+      (item) => item.selected === true
     ),
     actionType: projectManagerState.actionType,
     createProject: handleCreateProject,
     selectProject: handleSelectProject,
     cancelProject: handleCancelProject,
     addProject: handleAddProject,
+    changeProjectStatus: handleChangeProjectStatus,
     deleteProject: handleDeleteProject,
     addTask: handleAddTask,
     deleteTask: handleDeleteTask,

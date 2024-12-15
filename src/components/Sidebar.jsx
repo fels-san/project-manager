@@ -6,6 +6,14 @@ export default function Sidebar() {
   const { projects, createProject, selectProject } = useContext(
     ProjectManagementContext
   );
+  
+  const currentProjects = projects.filter(
+    (project) => project.status == "current"
+  );
+
+  const completedProjects = projects.filter(
+    (project) => project.status == "completed"
+  );
 
   return (
     <aside className="w-1/5 h-full bg-stone-900 px-6 py-12 rounded-tr-lg break-words">
@@ -18,13 +26,34 @@ export default function Sidebar() {
       >
         + Add Project
       </button>
-      {projects.map((project) => {
+      <h3 className="text-stone-300 font-bold text-lg mb-4">
+        Current Projects
+      </h3>
+      {currentProjects.map((project) => {
         return (
           <button
             onClick={() => selectProject(project.id)}
             key={project.id}
             className={`${
-              project.status === "selected"
+              project.selected
+                ? "bg-stone-800 text-stone-300"
+                : "text-stone-400"
+            } text-left w-full mb-3 p-2`}
+          >
+            {project.title}
+          </button>
+        );
+      })}
+      <h3 className="text-stone-400 font-bold text-lg mb-4">
+        Completed Projects
+      </h3>
+      {completedProjects.map((project) => {
+        return (
+          <button
+            onClick={() => selectProject(project.id)}
+            key={project.id}
+            className={`${
+              project.selected
                 ? "bg-stone-800 text-stone-300"
                 : "text-stone-400"
             } text-left w-full mb-3 p-2`}

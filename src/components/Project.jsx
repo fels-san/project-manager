@@ -12,7 +12,7 @@ export default function Project({ project }) {
     return date.toLocaleDateString("en-US", options);
   }
 
-  const { addTask, deleteTask, deleteProject } = useContext(
+  const { addTask, deleteTask, changeProjectStatus, deleteProject } = useContext(
     ProjectManagementContext
   );
 
@@ -31,10 +31,23 @@ export default function Project({ project }) {
   return (
     <div className="w-4/5 flex flex-col pt-32 pl-10 pr-44">
       <header className="flex flex-row justify-between">
-        <h2 className="w-4/5 break-words text-stone-700 text-3xl font-bold">{project.title}</h2>
-        <button onClick={() => deleteProject(project.id)} className="text-base">
-          Delete
-        </button>
+        <h2 className="w-4/5 break-words text-stone-700 text-3xl font-bold">
+          {project.title}
+        </h2>
+        <div className="flex flex-col items-end text-right">
+          <button
+            onClick={() => changeProjectStatus(project.id)}
+            className="text-base text-right"
+          >
+            {project.status === "current" ? "Mark as completed" : "Mark as current"}
+          </button>
+          <button
+            onClick={() => deleteProject(project.id)}
+            className="text-base text-right"
+          >
+            Delete
+          </button>
+        </div>
       </header>
       <p className="text-stone-400 my-2">{formatDate(project.date)}</p>
       <p>{project.description}</p>
