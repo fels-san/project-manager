@@ -16,7 +16,7 @@ export default function Sidebar() {
   );
 
   return (
-    <aside className="w-1/5 h-full bg-stone-900 px-6 py-12 rounded-tr-lg break-words">
+    <aside className="w-1/5 h-full bg-stone-900 px-6 py-12 rounded-tr-lg break-words overflow-y-auto">
       <h2 className="text-stone-50 uppercase text-xl font-bold">
         Your projects
       </h2>

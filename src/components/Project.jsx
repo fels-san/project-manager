@@ -28,7 +28,7 @@ export default function Project({ project }) {
   console.log(project);
 
   return (
-    <div className="w-4/5 flex flex-col pt-32 pl-10 pr-44">
+    <div className="box-border w-4/5 flex flex-col pt-32 pl-10 pr-44 overflow-y-auto">
       <header className="flex flex-row justify-between">
         <h2 className="w-4/5 break-words text-stone-700 text-3xl font-bold">
           {project.title}
