@@ -22,6 +22,7 @@ export default function NewProject() {
       date: new Date(date.current.value),
       status: "current",
       selected: false,
+      taskCounter: 0,
       tasks: [],
     });
   }

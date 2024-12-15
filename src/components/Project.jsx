@@ -12,21 +12,20 @@ export default function Project({ project }) {
     return date.toLocaleDateString("en-US", options);
   }
 
-  const { addTask, deleteTask, changeProjectStatus, deleteProject } = useContext(
-    ProjectManagementContext
-  );
-
-  const taskCounter = useRef(0);
+  const { addTask, deleteTask, changeProjectStatus, deleteProject } =
+    useContext(ProjectManagementContext);
   const taskTitle = useRef();
 
   function handleAddTask() {
     const title = taskTitle.current.value.trim();
     if (title) {
-      addTask(project.id, title, taskCounter.current++);
+      addTask(project.id, title, project.taskCounter);
       taskTitle.current.value = "";
       taskTitle.current.focus();
     }
   }
+
+  console.log(project);
 
   return (
     <div className="w-4/5 flex flex-col pt-32 pl-10 pr-44">
@@ -39,7 +38,9 @@ export default function Project({ project }) {
             onClick={() => changeProjectStatus(project.id)}
             className="text-base text-right"
           >
-            {project.status === "current" ? "Mark as completed" : "Mark as current"}
+            {project.status === "current"
+              ? "Mark as completed"
+              : "Mark as current"}
           </button>
           <button
             onClick={() => deleteProject(project.id)}

@@ -1,4 +1,5 @@
 import { createContext, useReducer } from "react";
+import { localStorageHelper } from "../localStorageHelper";
 
 export const ProjectManagementContext = createContext({
   projects: [],
@@ -29,14 +30,17 @@ function projectManagerReducer(state, action) {
   }
 
   if (action.type === "ADD_PROJECT") {
-    const updatedProjects = [
-      ...state.projects,
-      { ...action.payload, id: state.projectCounter },
-    ];
+    const updatedCounter = state.projectCounter + 1;
+    const newProject = { ...action.payload, id: state.projectCounter };
+    const updatedProjects = [...state.projects, newProject];
+
+    localStorageHelper.addProject(newProject);
+    localStorageHelper.setCounter(updatedCounter);
+
     return {
       ...state,
       projects: updatedProjects,
-      projectCounter: state.projectCounter + 1,
+      projectCounter: updatedCounter,
       actionType: "none",
     };
   }
@@ -65,6 +69,9 @@ function projectManagerReducer(state, action) {
     const updatedProjects = state.projects.filter(
       (project) => project.id !== action.payload
     );
+
+    localStorageHelper.deleteProject(action.payload);
+
     return { ...state, projects: updatedProjects, actionType: "none" };
   }
 
@@ -77,6 +84,12 @@ function projectManagerReducer(state, action) {
           }
         : project
     );
+
+    const updatedProject = updatedProjects.find(
+      (project) => project.id === action.payload
+    );
+    localStorageHelper.updateProject(updatedProject);
+
     return {
       ...state,
       projects: updatedProjects,
@@ -85,17 +98,25 @@ function projectManagerReducer(state, action) {
   }
 
   if (action.type === "ADD_TASK") {
+    const updatedCounter = action.payload.taskId + 1;
+
+    const newTask = {
+      title: action.payload.taskTitle,
+      id: updatedCounter,
+    };
+
     const updatedProjects = state.projects.map((project) =>
       project.id === action.payload.projectId
         ? {
             ...project,
-            tasks: [
-              ...project.tasks,
-              { title: action.payload.taskTitle, id: action.payload.taskId },
-            ],
+            taskCounter: updatedCounter,
+            tasks: [...project.tasks, newTask],
           }
         : project
     );
+
+    localStorageHelper.addTaskToProject(action.payload.projectId, newTask);
+
     return { ...state, projects: updatedProjects };
   }
 
@@ -110,17 +131,26 @@ function projectManagerReducer(state, action) {
           }
         : project
     );
+
+    localStorageHelper.removeTask(
+      action.payload.projectId,
+      action.payload.taskId
+    );
+
     return { ...state, projects: updatedProjects };
   }
 }
+
+const storedProjects = [...localStorageHelper.getProjects()].reverse();
+const storedCounter = localStorageHelper.getCounter();
 
 export default function ProjectManagementContextProvider({ children }) {
   const [projectManagerState, projectManagerDispatch] = useReducer(
     projectManagerReducer,
     {
-      projects: [],
+      projects: storedProjects,
       actionType: "none",
-      projectCounter: 0,
+      projectCounter: storedCounter,
     }
   );
 

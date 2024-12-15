@@ -6,7 +6,7 @@ export default function Sidebar() {
   const { projects, createProject, selectProject } = useContext(
     ProjectManagementContext
   );
-  
+
   const currentProjects = projects.filter(
     (project) => project.status == "current"
   );
