@@ -6,12 +6,16 @@ export const localStorageHelper = {
       ...project,
       dueDate: project.dueDate ? new Date(project.dueDate) : null,
       startDate: project.startDate ? new Date(project.startDate) : null,
-      isSelected: !project.isSelected,
+      isSelected: !!project.isSelected,
     }));
   },
 
   saveProjects(projects) {
-    localStorage.setItem("projects", JSON.stringify(projects));
+    const updatedProject = projects.map((project) => ({
+      ...project,
+      isSelected: false,
+    }));
+    localStorage.setItem("projects", JSON.stringify(updatedProject));
   },
 
   addProject(project) {

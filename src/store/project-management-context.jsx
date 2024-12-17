@@ -1,4 +1,4 @@
-import { createContext, useReducer } from "react";
+import { act, createContext, useReducer } from "react";
 import { localStorageHelper } from "../localStorageHelper";
 
 export const ProjectManagementContext = createContext({
@@ -7,12 +7,17 @@ export const ProjectManagementContext = createContext({
   actionType: "none",
   changePage: () => {},
   createProject: () => {},
+  editProject: () => {},
   selectProject: () => {},
   cancelProject: () => {},
+  cancelEditing: () => {},
   addProject: () => {},
+  updateProject: () => {},
   changeProjectStatus: () => {},
   deleteProject: () => {},
   addTask: () => {},
+  changeTaskStatus: () => {},
+  updateTask: () => {},
   deleteTask: () => {},
 });
 
@@ -51,6 +56,13 @@ function projectManagerReducer(state, action) {
     };
   }
 
+  if (action.type === "EDIT_PROJECT") {
+    return {
+      ...state,
+      actionType: "editProject",
+    };
+  }
+
   if (action.type === "ADD_PROJECT") {
     const updatedCounter = state.projectCounter + 1;
     const newProject = { ...action.payload, id: state.projectCounter };
@@ -67,10 +79,39 @@ function projectManagerReducer(state, action) {
     };
   }
 
+  if (action.type === "UPDATE_PROJECT") {
+    const updatedProject = {
+      ...action.payload.project,
+      ...action.payload.updatedProject,
+    };
+
+    const updatedProjects = state.projects.map((project) => {
+      if (project.id === action.payload.project.id) {
+        return updatedProject;
+      }
+      return project;
+    });
+
+    localStorageHelper.updateProject(updatedProject);
+
+    return {
+      ...state,
+      projects: updatedProjects,
+      actionType: "editing",
+    };
+  }
+
   if (action.type === "CANCEL_PROJECT") {
     return {
       ...state,
       actionType: "none",
+    };
+  }
+
+  if (action.type === "CANCEL_EDITING") {
+    return {
+      ...state,
+      actionType: "editing",
     };
   }
 
@@ -124,6 +165,7 @@ function projectManagerReducer(state, action) {
 
     const newTask = {
       title: action.payload.taskTitle,
+      isCompleted: false,
       id: updatedCounter,
     };
 
@@ -140,6 +182,56 @@ function projectManagerReducer(state, action) {
     localStorageHelper.addTaskToProject(action.payload.projectId, newTask);
 
     return { ...state, projects: updatedProjects };
+  }
+
+  if (action.type === "CHANGE_TASK_STATUS") {
+    const updatedProjects = state.projects.map((project) => {
+      if (project.id !== action.payload.projectId) return project;
+      return {
+        ...project,
+        tasks: project.tasks.map((task) =>
+          task.id === action.payload.taskId
+            ? { ...task, isCompleted: !task.isCompleted }
+            : task
+        ),
+      };
+    });
+
+    const updatedProject = updatedProjects.find(
+      (project) => project.id === action.payload.projectId
+    );
+    localStorageHelper.updateProject(updatedProject);
+
+    return {
+      ...state,
+      projects: updatedProjects,
+      actionType: "editing",
+    };
+  }
+
+  if (action.type === "UPDATE_TASK") {
+    const updatedProjects = state.projects.map((project) => {
+      if (project.id !== action.payload.projectId) return project;
+      return {
+        ...project,
+        tasks: project.tasks.map((task) =>
+          task.id === action.payload.task.id
+            ? { ...task, ...action.payload.task }
+            : task
+        ),
+      };
+    });
+
+    const updatedProject = updatedProjects.find(
+      (project) => project.id === action.payload.projectId
+    );
+    localStorageHelper.updateProject(updatedProject);
+
+    return {
+      ...state,
+      projects: updatedProjects,
+      actionType: "editing",
+    };
   }
 
   if (action.type === "DELETE_TASK") {
@@ -190,15 +282,34 @@ export default function ProjectManagementContextProvider({ children }) {
     });
   }
 
+  function handleUpdateProject(project, updatedProject) {
+    projectManagerDispatch({
+      type: "UPDATE_PROJECT",
+      payload: { project, updatedProject },
+    });
+  }
+
   function handleCreateProject() {
     projectManagerDispatch({
       type: "CREATE_PROJECT",
     });
   }
 
+  function handleEditProject() {
+    projectManagerDispatch({
+      type: "EDIT_PROJECT",
+    });
+  }
+
   function handleCancelProject() {
     projectManagerDispatch({
       type: "CANCEL_PROJECT",
+    });
+  }
+
+  function handleCancelEditing() {
+    projectManagerDispatch({
+      type: "CANCEL_EDITING",
     });
   }
 
@@ -234,6 +345,26 @@ export default function ProjectManagementContextProvider({ children }) {
     });
   }
 
+  function handleChangeTaskStatus(projectId, taskId) {
+    projectManagerDispatch({
+      type: "CHANGE_TASK_STATUS",
+      payload: {
+        projectId,
+        taskId,
+      },
+    });
+  }
+
+  function handleUpdateTask(projectId, task) {
+    projectManagerDispatch({
+      type: "UPDATE_TASK",
+      payload: {
+        projectId,
+        task,
+      },
+    });
+  }
+
   function handleDeleteTask(projectId, taskId) {
     projectManagerDispatch({
       type: "DELETE_TASK",
@@ -252,12 +383,17 @@ export default function ProjectManagementContextProvider({ children }) {
     actionType: projectManagerState.actionType,
     changePage: handleChangePage,
     createProject: handleCreateProject,
+    editProject: handleEditProject,
     selectProject: handleSelectProject,
     cancelProject: handleCancelProject,
+    cancelEditing: handleCancelEditing,
     addProject: handleAddProject,
+    updateProject: handleUpdateProject,
     changeProjectStatus: handleChangeProjectStatus,
     deleteProject: handleDeleteProject,
     addTask: handleAddTask,
+    changeTaskStatus: handleChangeTaskStatus,
+    updateTask: handleUpdateTask,
     deleteTask: handleDeleteTask,
   };
 

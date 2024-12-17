@@ -2,6 +2,7 @@ export default function InputField({
   label,
   type = "text",
   ref,
+  defaultValue,
   isTextArea = false,
   setList,
 }) {
@@ -26,6 +27,7 @@ export default function InputField({
           className="bg-stone-200 w-full h-20 px-2 mb-4 border-b-2 border-stone-300 focus:outline-none focus:border-b-2 focus:border-stone-900"
           type={type}
           ref={ref}
+          defaultValue={defaultValue}
           required
         />
       ) : (
@@ -33,6 +35,7 @@ export default function InputField({
           className="bg-stone-200 w-full h-10 px-2 mb-4 border-b-2 border-stone-300 focus:outline-none focus:border-b-2 focus:border-stone-900"
           type={type}
           ref={ref}
+          defaultValue={defaultValue}
           onKeyDown={handleAddItem}
           required
         />
