@@ -4,8 +4,9 @@ export const localStorageHelper = {
 
     return storedProjects.map((project) => ({
       ...project,
-      date: project.date ? new Date(project.date) : null,
-      selected: !!project.selected,
+      dueDate: project.dueDate ? new Date(project.dueDate) : null,
+      startDate: project.startDate ? new Date(project.startDate) : null,
+      isSelected: !project.isSelected,
     }));
   },
 

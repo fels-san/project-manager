@@ -8,11 +8,10 @@ export default function Sidebar() {
   );
 
   const currentProjects = projects.filter(
-    (project) => project.status == "current"
+    (project) => project.isCompleted === false
   );
-
   const completedProjects = projects.filter(
-    (project) => project.status == "completed"
+    (project) => project.isCompleted == true
   );
 
   return (
@@ -20,6 +19,17 @@ export default function Sidebar() {
       <h2 className="text-stone-50 uppercase text-xl font-bold">
         Your projects
       </h2>
+      <search>
+        <form>
+          <input
+            className="w-full mt-4 p-2 rounded-md focus:outline-none"
+            autoComplete="off"
+            inputMode="search"
+            type="search"
+            placeholder="What do you want to find?"
+          />
+        </form>
+      </search>
       <button
         onClick={createProject}
         className="bg-stone-700 text-stone-400 rounded-md px-4 py-2 my-7"
@@ -35,7 +45,7 @@ export default function Sidebar() {
             onClick={() => selectProject(project.id)}
             key={project.id}
             className={`${
-              project.selected
+              project.isSelected
                 ? "bg-stone-800 text-stone-300"
                 : "text-stone-400"
             } text-left w-full mb-3 p-2`}
@@ -53,7 +63,7 @@ export default function Sidebar() {
             onClick={() => selectProject(project.id)}
             key={project.id}
             className={`${
-              project.selected
+              project.isSelected
                 ? "bg-stone-800 text-stone-300"
                 : "text-stone-400"
             } text-left w-full mb-3 p-2`}

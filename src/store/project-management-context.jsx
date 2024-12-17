@@ -5,6 +5,7 @@ export const ProjectManagementContext = createContext({
   projects: [],
   selectedProject: null,
   actionType: "none",
+  changePage: () => {},
   createProject: () => {},
   selectProject: () => {},
   cancelProject: () => {},
@@ -16,10 +17,31 @@ export const ProjectManagementContext = createContext({
 });
 
 function projectManagerReducer(state, action) {
+  if (action.type === "CHANGE_PAGE") {
+    if (action.payload === "general") {
+      return {
+        ...state,
+        actionType: "none",
+      };
+    }
+    if (action.payload === "current project") {
+      return {
+        ...state,
+        actionType: "editing",
+      };
+    }
+    if (action.payload === "new project") {
+      return {
+        ...state,
+        actionType: "creating",
+      };
+    }
+  }
+
   if (action.type === "CREATE_PROJECT") {
     const updatedProjects = state.projects.map((project) => ({
       ...project,
-      selected: false,
+      isSelected: false,
     }));
 
     return {
@@ -55,7 +77,7 @@ function projectManagerReducer(state, action) {
   if (action.type === "SELECT_PROJECT") {
     const updatedProjects = state.projects.map((project) => ({
       ...project,
-      selected: project.id === action.payload ? true : false,
+      isSelected: project.id === action.payload ? true : false,
     }));
 
     return {
@@ -80,7 +102,7 @@ function projectManagerReducer(state, action) {
       project.id === action.payload
         ? {
             ...project,
-            status: project.status === "current" ? "completed" : "current",
+            isCompleted: !project.isCompleted,
           }
         : project
     );
@@ -154,6 +176,13 @@ export default function ProjectManagementContextProvider({ children }) {
     }
   );
 
+  function handleChangePage(pageName) {
+    projectManagerDispatch({
+      type: "CHANGE_PAGE",
+      payload: pageName,
+    });
+  }
+
   function handleAddProject(project) {
     projectManagerDispatch({
       type: "ADD_PROJECT",
@@ -218,9 +247,10 @@ export default function ProjectManagementContextProvider({ children }) {
   const ctxValue = {
     projects: projectManagerState.projects,
     selectedProject: projectManagerState.projects.find(
-      (item) => item.selected === true
+      (item) => item.isSelected === true
     ),
     actionType: projectManagerState.actionType,
+    changePage: handleChangePage,
     createProject: handleCreateProject,
     selectProject: handleSelectProject,
     cancelProject: handleCancelProject,

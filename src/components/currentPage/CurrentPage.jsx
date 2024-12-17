@@ -1,16 +1,16 @@
 import { useContext } from "react";
 
-import { ProjectManagementContext } from "../store/project-management-context";
+import { ProjectManagementContext } from "../../store/project-management-context";
 
-import EmptyPage from "./EmptyPage";
-import NewProject from "./NewProject";
-import Project from "./Project";
+import GeneralPage from "./generalPage/GeneralPage";
+import NewProject from "./newProjectPage/NewProject";
+import Project from "./projectPage/Project";
 
 export default function CurrentPage() {
   const { actionType, selectedProject } = useContext(ProjectManagementContext);
 
   if (actionType === "none") {
-    return <EmptyPage />;
+    return <GeneralPage />;
   }
   if (actionType === "creating") {
     return <NewProject />;
