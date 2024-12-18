@@ -22,7 +22,7 @@ export default function Navigation() {
         </li>
         <li
           className={`${
-            actionType === "statictic"
+            actionType === "statitic"
               ? "bg-stone-50 text-stone-600"
               : "bg-stone-100 text-stone-400"
           } px-5 pt-4 pb-2 rounded-t-md font-bold cursor-pointer`}

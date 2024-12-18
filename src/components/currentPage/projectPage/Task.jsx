@@ -3,6 +3,7 @@ import { useContext, useRef, useState, useEffect } from "react";
 import { ProjectManagementContext } from "../../../store/project-management-context";
 
 import Check from "../../../assets/check-circle.svg";
+import Save from "../../../assets/check-lg.svg";
 import Pencil from "../../../assets/pencil-square.svg";
 import Delete from "../../../assets/x-square.svg";
 
@@ -20,7 +21,7 @@ export default function Task({ taskContent, projectId }) {
   }
 
   function handleSave(event) {
-    if (event.key !== "Enter") return;
+    if (event.key && event.key !== "Enter") return;
     updateTask(projectId, { ...taskContent, title: input.current.value });
     setIsEditing((editing) => !editing);
   }
@@ -34,13 +35,21 @@ export default function Task({ taskContent, projectId }) {
   return (
     <div className="flex flex-row justify-between">
       {isEditing ? (
-        <input
-          onKeyDown={handleSave}
-          type="text"
-          defaultValue={taskContent.title}
-          ref={input}
-          className="w-4/5 bg-transparent focus:border-0 focus:outline-none"
-        />
+        <>
+          <input
+            onKeyDown={handleSave}
+            type="text"
+            defaultValue={taskContent.title}
+            ref={input}
+            className="w-4/5 bg-transparent focus:border-0 focus:outline-none"
+          />
+          <button
+            onClick={handleSave}
+            title="Save"
+          >
+            <img src={Save} alt="check" />
+          </button>
+        </>
       ) : (
         <>
           <p

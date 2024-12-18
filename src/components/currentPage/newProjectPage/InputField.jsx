@@ -5,6 +5,7 @@ export default function InputField({
   defaultValue,
   isTextArea = false,
   setList,
+  hasError,
 }) {
   function handleAddItem(event) {
     if (event.key !== "Enter") return;
@@ -18,13 +19,15 @@ export default function InputField({
   }
 
   return (
-    <div>
-      <label className={"uppercase font-bold text-stone-600 mb-2"}>
+    <div className="mt-4">
+      <label className={"uppercase font-bold text-stone-600"}>
         {label}
       </label>
       {isTextArea ? (
         <textarea
-          className="bg-stone-200 w-full h-20 px-2 mb-4 border-b-2 border-stone-300 focus:outline-none focus:border-b-2 focus:border-stone-900"
+          className={`${
+            hasError ? "border-red-500 " : "border-stone-300 "
+          }bg-stone-200 w-full h-20 px-2 mt-1 border-b-2 focus:outline-none focus:border-b-2 focus:border-stone-900`}
           type={type}
           ref={ref}
           defaultValue={defaultValue}
@@ -32,13 +35,18 @@ export default function InputField({
         />
       ) : (
         <input
-          className="bg-stone-200 w-full h-10 px-2 mb-4 border-b-2 border-stone-300 focus:outline-none focus:border-b-2 focus:border-stone-900"
+          className={`${
+            hasError ? "border-red-500 " : "border-stone-300 "
+          }bg-stone-200 w-full h-10 px-2 mt-1 border-b-2 focus:outline-none focus:border-b-2 focus:border-stone-900`}
           type={type}
           ref={ref}
           defaultValue={defaultValue}
           onKeyDown={handleAddItem}
           required
         />
+      )}
+      {hasError && (
+        <p className="text-red-500 text-sm mt-1">{`${label} is required.`}</p>
       )}
     </div>
   );
