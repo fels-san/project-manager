@@ -1,78 +1,113 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useCallback } from "react";
 
 import { ProjectManagementContext } from "../../../store/project-management-context";
 
 import ProjectsList from "./ProjectsList";
 import EmployeesList from "./EmployeesList";
 import TagsList from "./TagsList";
+import SearchBar from "./SearchBar";
+import Dropdown from "./DropDown";
 
 export default function GeneralPage() {
   const [searchText, setSearchText] = useState("");
   const { projects } = useContext(ProjectManagementContext);
+  const [sortType, setSortType] = useState("By Project Status");
+  const [isDescending, setIsDescending] = useState(true);
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [selectedEmployees, setSelectedEmployees] = useState([]);
 
-  function handleSearchChange(event) {
-    setSearchText(event.target.value);
+  const handleSearchChange = useCallback((value) => {
+    setSearchText(value);
+  }, []);
+
+  const handleSortChange = useCallback((type, isDescending) => {
+    setSortType(type);
+    setIsDescending(isDescending);
+  }, []);
+
+  function handleTagSelection(tag) {
+    setSelectedTags((prevTags) => {
+      if (prevTags.includes(tag)) {
+        return prevTags.filter((t) => t !== tag);
+      } else {
+        return [...prevTags, tag];
+      }
+    });
   }
 
-  const filteredProjects = projects.filter(
-    (project) =>
-      project.title.toLowerCase().includes(searchText.toLowerCase()) ||
-      project.description.toLowerCase().includes(searchText.toLowerCase())
-  );
+  function handleEmployeeSelection(employee) {
+    setSelectedEmployees((prevEmployees) => {
+      if (prevEmployees.includes(employee)) {
+        return prevEmployees.filter((t) => t !== employee);
+      } else {
+        return [...prevEmployees, employee];
+      }
+    });
+  }
+
+  function getFilteredProjects() {
+    return projects.filter((project) => {
+      // const matchesSearchText =
+      //   project.title.toLowerCase().includes(searchText.toLowerCase()) ||
+      //   project.description.toLowerCase().includes(searchText.toLowerCase());
+
+      const matchesEmployees = selectedEmployees.every((employee) => project.team.includes(employee));
+      const matchesTags = selectedTags.every((tag) => project.tag.includes(tag));
+
+      return matchesTags && matchesEmployees;
+    });
+  }
+
+  function getSortedProjects(filteredProjects) {
+    return [...filteredProjects].sort(
+      (a, b) => {
+        let comparison = 0;
+
+        switch (sortType) {
+          case "By Creation Date":
+            comparison = b.id - a.id;
+            break;
+
+          case "By Project Status":
+            const statusA = a.isCompleted ? "completed" : "current";
+            const statusB = b.isCompleted ? "completed" : "current";
+            comparison = statusA.localeCompare(statusB);
+            break;
+
+          default:
+            break;
+        }
+
+        return isDescending ? -comparison : comparison;
+      }
+    );
+  }
+
+  const filteredProjects = getFilteredProjects();
+  const sortedProjects = getSortedProjects(filteredProjects);
 
   return (
-    <div className="box-border h-full w-full bg-stone-50 flex flex-col items-start justify-start pl-10 py-10 pr-44 overflow-y-auto">
-      <div>
-        <form>
-          <input
-            className="w-80 p-2 rounded-md border-2 border-stone-300 focus:outline-none"
-            autoComplete="off"
-            inputMode="search"
-            type="search"
-            placeholder="What do you want to find?"
-            onChange={handleSearchChange}
+    <div className="box-border h-full w-full bg-stone-50 flex flex-col items-start justify-start pl-10 py-8 pr-11 overflow-auto">
+      <div className="w-full h-full flex flex-row gap-14 py-2">
+        <div className="h-full w-4/5">
+          <div className="flex flex-row gap-4 items-baseline">
+            <SearchBar onSearchChange={handleSearchChange} />
+            <Dropdown
+              sortType={sortType}
+              isDescending={isDescending}
+              onSortChange={handleSortChange}
+            />
+          </div>
+          <ProjectsList
+            projects={sortedProjects}
+            isSearchResult={searchText !== ""}
           />
-        </form>
-      </div>
-      {searchText === "" ? (
-        <>
-          <ProjectsList />
-          <hr className="mt-10 w-full border-2 text-stone-400 bg-stone-400 h-0.5" />
-          <EmployeesList />
-          <hr className="mt-10 w-full border-2 text-stone-400 bg-stone-400 h-0.5" />
-          <TagsList />
-        </>
-      ) : (
-        <div className="py-5">
-          {filteredProjects.length > 0 ? (
-            filteredProjects.map((project) => (
-              <div
-                key={project.id}
-                className={`${
-                  project.isCompleted === true ? "opacity-30" : ""
-                } border-2 border-stone-900 rounded-md p-4 mb-4 cursor-pointer`}
-                onClick={() => selectProject(project.id)}
-              >
-                <h3 className="text-base text-stone-800 font-semibold mb-2">
-                  {project.title}
-                </h3>
-                <p
-                  className="overflow-hidden text-ellipsis"
-                  style={{
-                    display: "-webkit-box",
-                    WebkitBoxOrient: "vertical",
-                    WebkitLineClamp: 5,
-                  }}
-                >
-                  {project.description}
-                </p>
-              </div>
-            ))
-          ) : (
-            <p>No projects found matching your search.</p>
-          )}
         </div>
-      )}
+        <div className="w-1/5">
+          <EmployeesList selectedEmployees={selectedEmployees} onEmployeeSelection={handleEmployeeSelection} />
+          <TagsList selectedTags={selectedTags} onTagSelection={handleTagSelection} />
+        </div>
+      </div>
     </div>
   );
 }
