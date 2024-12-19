@@ -18,3 +18,12 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #57534e;
 }
+
+[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 22px;
+  width: 22px;
+  background-image: url("./assets/x.svg");
+  background-size: 22px 22px;
+}
