@@ -6,7 +6,7 @@ export default function ProjectsList({ projects, isSearchResult = false }) {
   const { selectProject } = useContext(ProjectManagementContext);
 
   return (
-    <div>
+    <div className="pb-3">
       {projects.length > 0 ? (
         projects.map((project) => (
           <div

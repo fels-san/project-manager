@@ -1,7 +1,6 @@
 import { useContext } from "react";
 
 import { ProjectManagementContext } from "../store/project-management-context";
-import Close from "../assets/x.svg";
 
 export default function Sidebar() {
   const { projects, createProject, selectProject } = useContext(

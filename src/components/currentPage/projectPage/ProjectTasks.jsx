@@ -1,46 +1,83 @@
-import { useRef, useContext } from "react";
+import { useContext, useState } from "react";
+import { closestCorners, DndContext } from "@dnd-kit/core";
+import { useSensor, useSensors, MouseSensor } from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 
 import { ProjectManagementContext } from "../../../store/project-management-context";
 import Task from "./Task";
 
 export default function ProjectTasks({ project }) {
-  const { addTask } = useContext(ProjectManagementContext);
+  const { addTask, updateTaskOrder } = useContext(ProjectManagementContext);
 
-  const taskTitle = useRef();
+  const sensors = useSensors(
+    useSensor(MouseSensor, {
+      activationConstraint: { distance: 5 },
+    })
+  );
+
+  const [taskTitle, setTaskTitle] = useState("");
 
   function handleAddTask(event) {
     if (event.key && event.key !== "Enter") return;
-    const title = taskTitle.current.value.trim();
+
+    const title = taskTitle.trim();
     if (title) {
       addTask(project.id, title, project.taskCounter);
-      taskTitle.current.value = "";
-      taskTitle.current.focus();
+      setTaskTitle("");
     }
   }
+
+  const getTaskPos = (id) => project.tasks.findIndex((task) => task.id === id);
+
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+
+    if (active.id === over.id) return;
+
+    const originalPos = getTaskPos(active.id);
+    const newPos = getTaskPos(over.id);
+
+    updateTaskOrder(project.id, originalPos, newPos);
+  };
 
   return (
     <>
       <h2 className="text-stone-700 text-3xl font-bold my-3">Tasks</h2>
       <div className="flex flex-row justify-between items-baseline pr-2">
         <input
-          ref={taskTitle}
+          value={taskTitle}
           type="text"
+          onChange={(e) => setTaskTitle(e.target.value)}
           onKeyDown={handleAddTask}
           className="bg-stone-200 mr-4 mb-4 h-7 w-11/12 rounded-md pl-2"
         />
         <button onClick={handleAddTask}>Add Task</button>
       </div>
-      {project.tasks.length > 0 ? (
-        <div className="bg-stone-100 py-8 px-5 rounded-md flex flex-col gap-4">
-          {project.tasks.map((task) => {
-            return (
-              <Task key={task.id} taskContent={task} projectId={project.id} />
-            );
-          })}
-        </div>
-      ) : (
-        <p>This project does not have any tasks yet.</p>
-      )}
+      <DndContext onDragEnd={handleDragEnd} collisionDetection={closestCorners} sensors={sensors}>
+        {project.tasks.length > 0 ? (
+          <div className="bg-stone-100 py-8 px-5 rounded-md flex flex-col gap-4">
+            <SortableContext
+              items={project.tasks}
+              strategy={verticalListSortingStrategy}
+            >
+              {project.tasks.map((task) => {
+                return (
+                  <Task
+                    key={task.id}
+                    taskContent={task}
+                    projectId={project.id}
+                  />
+                );
+              })}
+            </SortableContext>
+          </div>
+        ) : (
+          <p>This project does not have any tasks yet.</p>
+        )}
+      </DndContext>
     </>
   );
 }
