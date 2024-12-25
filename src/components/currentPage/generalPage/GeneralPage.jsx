@@ -1,12 +1,12 @@
-import { useState, useContext, useCallback } from "react";
+import { useState, useContext, useCallback, useRef } from "react";
 
 import { ProjectManagementContext } from "../../../store/project-management-context";
 
 import ProjectsList from "./ProjectsList";
-import EmployeesList from "./EmployeesList";
+import EmployeesList from "./employeesList/EmployeesList";
 import TagsList from "./TagsList";
 import SearchBar from "./SearchBar";
-import Dropdown from "./DropDown";
+import Dropdown from "./dropdown/DropDown";
 
 export default function GeneralPage() {
   const [searchText, setSearchText] = useState("");
@@ -15,6 +15,14 @@ export default function GeneralPage() {
   const [isDescending, setIsDescending] = useState(true);
   const [selectedTags, setSelectedTags] = useState([]);
   const [selectedEmployees, setSelectedEmployees] = useState([]);
+
+  const projectsContainer = useRef(null);
+
+  function scrollToTop() {
+    if (projectsContainer.current) {
+      projectsContainer.current.scrollTop = 0;
+    }
+  }
 
   const handleSearchChange = useCallback((value) => {
     setSearchText(value);
@@ -46,56 +54,70 @@ export default function GeneralPage() {
   }
 
   function getFilteredProjects() {
+    scrollToTop();
     return projects.filter((project) => {
-      // const matchesSearchText =
-      //   project.title.toLowerCase().includes(searchText.toLowerCase()) ||
-      //   project.description.toLowerCase().includes(searchText.toLowerCase());
+      const matchesSearchText =
+        project.title.toLowerCase().includes(searchText.toLowerCase()) ||
+        project.description.toLowerCase().includes(searchText.toLowerCase());
 
-      const matchesEmployees = selectedEmployees.every((employee) => project.team.includes(employee));
-      const matchesTags = selectedTags.every((tag) => project.tag.includes(tag));
+      const matchesEmployees = selectedEmployees.every((employee) =>
+        project.team.some((teamMember) => teamMember.name === employee)
+      );
+      const matchesTags = selectedTags.every((tag) =>
+        project.tag.includes(tag)
+      );
 
-      return matchesTags && matchesEmployees;
+      return matchesTags && matchesEmployees && matchesSearchText;
     });
   }
 
   function getSortedProjects(filteredProjects) {
-    return [...filteredProjects].sort(
-      (a, b) => {
-        let comparison = 0;
+    return [...filteredProjects].sort((a, b) => {
+      let comparison = 0;
 
-        switch (sortType) {
-          case "By Creation Date":
-            comparison = b.id - a.id;
-            break;
+      switch (sortType) {
+        case "By Creation Date":
+          comparison = b.id - a.id;
+          break;
 
-          case "By Project Status":
-            const statusA = a.isCompleted ? "completed" : "current";
-            const statusB = b.isCompleted ? "completed" : "current";
-            comparison = statusA.localeCompare(statusB);
-            break;
+        case "By Project Status":
+          const statusA = a.isCompleted ? "completed" : "current";
+          const statusB = b.isCompleted ? "completed" : "current";
+          comparison = statusA.localeCompare(statusB);
+          break;
 
-          default:
-            break;
-        }
-
-        return isDescending ? -comparison : comparison;
+        default:
+          break;
       }
-    );
+
+      return isDescending ? -comparison : comparison;
+    });
   }
 
   const filteredProjects = getFilteredProjects();
   const sortedProjects = getSortedProjects(filteredProjects);
 
   return (
-    <div className="box-border h-full w-full bg-stone-50 flex flex-col items-start justify-start pl-10 py-8 pr-11 overflow-auto">
-      <div className="w-full h-full flex flex-row gap-14 py-2">
+    <div
+      ref={projectsContainer}
+      className="box-border h-full w-full bg-stone-50 flex flex-col items-start justify-start pl-10 py-8 pr-11 overflow-auto scroll-smooth"
+    >
+      <div className="w-full h-full flex flex-row gap-14">
         <div className="h-full w-4/5">
           <div className="flex flex-row gap-4 items-baseline">
             <SearchBar onSearchChange={handleSearchChange} />
             <Dropdown
-              sortType={sortType}
-              isDescending={isDescending}
-              onSortChange={handleSortChange}
+              selectedOption={{
+                title: sortType,
+                isDescending: isDescending,
+              }}
+              options={[
+                { type: "By Creation Date", isDescending: true },
+                { type: "By Creation Date", isDescending: false },
+                { type: "By Project Status", isDescending: true },
+                { type: "By Project Status", isDescending: false },
+              ]}
+              onChange={handleSortChange}
             />
           </div>
           <ProjectsList
@@ -104,8 +126,14 @@ export default function GeneralPage() {
           />
         </div>
         <div className="w-1/5">
-          <EmployeesList selectedEmployees={selectedEmployees} onEmployeeSelection={handleEmployeeSelection} />
-          <TagsList selectedTags={selectedTags} onTagSelection={handleTagSelection} />
+          <EmployeesList
+            selectedEmployees={selectedEmployees}
+            onEmployeeSelection={handleEmployeeSelection}
+          />
+          <TagsList
+            selectedTags={selectedTags}
+            onTagSelection={handleTagSelection}
+          />
         </div>
       </div>
     </div>
