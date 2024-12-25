@@ -11,11 +11,11 @@ export const localStorageHelper = {
   },
 
   saveProjects(projects) {
-    const updatedProject = projects.map((project) => ({
+    const updatedProjects = projects.map((project) => ({
       ...project,
       isSelected: false,
     }));
-    localStorage.setItem("projects", JSON.stringify(updatedProject));
+    localStorage.setItem("projects", JSON.stringify(updatedProjects));
   },
 
   addProject(project) {
@@ -66,6 +66,60 @@ export const localStorageHelper = {
       return p;
     });
     this.saveProjects(updatedProjects);
+  },
+
+  getEmployees() {
+    // const storedProjects = JSON.parse(localStorage.getItem("projects")) || [];
+
+    // return storedProjects.map((project) => ({
+    //   ...project,
+    //   dueDate: project.dueDate ? new Date(project.dueDate) : null,
+    //   startDate: project.startDate ? new Date(project.startDate) : null,
+    //   isSelected: !!project.isSelected,
+    // }));
+
+    const storedEmployees = JSON.parse(localStorage.getItem("employees")) || [];
+
+    return storedEmployees.map((employee) => ({
+      ...employee,
+      birthDate: employee.birthDate ? new Date(employee.birthDate) : null,
+      companyStartYear: employee.companyStartYear
+        ? new Date(employee.companyStartYear)
+        : null,
+    }));
+  },
+
+  saveEmployees(employees) {
+    // let counter = 0;
+    // const updatedEmp = employees.map((employee) => {
+    //   return {
+    //     ...employee,
+    //     id: counter++,
+    //   };
+    // });
+    localStorage.setItem("employees", JSON.stringify(employees));
+  },
+
+  addEmployees(newEmployees) {
+    const employees = this.getEmployees();
+    const uniqueNewEmployees = newEmployees.filter(
+      (emp) => !employees.some((existingEmp) => existingEmp.name === emp.name)
+    );
+    this.saveEmployees([...employees, ...uniqueNewEmployees]);
+  },
+
+  updateEmployee(updatedEmployee) {
+    const employees = this.getEmployees();
+    const updatedEmployees = employees.map((e) =>
+      e.id === updatedEmployee.id ? updatedEmployee : e
+    );
+    this.saveEmployees(updatedEmployees);
+  },
+
+  deleteEmployee(employeeId) {
+    const employees = this.getEmployees();
+    const updatedEmployees = employees.filter((e) => e.id !== employeeId);
+    this.saveEmployees(updatedEmployees);
   },
 
   getCounter() {

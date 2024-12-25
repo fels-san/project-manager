@@ -29,7 +29,6 @@ export default function InputField({
             hasError ? "border-red-500 " : "border-stone-300 "
           }bg-stone-200 w-full h-20 px-2 mt-1 border-b-2 focus:outline-none focus:border-b-2 focus:border-stone-900`}
           type={type}
-          ref={ref}
           defaultValue={defaultValue}
           required
         />

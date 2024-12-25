@@ -3,7 +3,7 @@ import { useContext } from "react";
 import { ProjectManagementContext } from "../store/project-management-context";
 
 export default function Navigation() {
-  const { changePage, actionType, selectedProject } = useContext(
+  const { changePage, actionType, selectedProject, selectedEmployee, projects } = useContext(
     ProjectManagementContext
   );
 
@@ -18,7 +18,7 @@ export default function Navigation() {
           } px-5 pt-4 pb-2 rounded-t-md font-bold cursor-pointer`}
           onClick={() => changePage("general")}
         >
-          General
+          General <div className="inline bg-stone-200 rounded-full px-1 py-0.5">{projects.length}</div>
         </li>
         <li
           className={`${
@@ -50,6 +50,17 @@ export default function Navigation() {
             onClick={() => changePage("new project")}
           >
             New Project
+          </li>
+        )}
+        {actionType === "viewingProfile" && selectedEmployee && (
+          <li
+            className={`${
+              actionType === "viewingProfile"
+                ? "bg-stone-50 text-stone-600"
+                : "bg-stone-100 text-stone-400"
+            } px-5 pt-4 pb-2 rounded-t-md font-bold cursor-pointer`}
+          >
+            {selectedEmployee.name}
           </li>
         )}
       </ul>

@@ -3,24 +3,33 @@ import { useContext } from "react";
 import { ProjectManagementContext } from "../../store/project-management-context";
 
 import GeneralPage from "./generalPage/GeneralPage";
-import NewProject from "./newProjectPage/NewProject";
-import EditProject from "./newProjectPage/EditProject";
+import ProjectForm from "./projectForm/ProjectForm";
 import Project from "./projectPage/Project";
+import EmployeeProfile from "./EmployeeProfile";
+import EditEmployee from "./EditEmployee";
 
 export default function CurrentPage() {
-  const { actionType, selectedProject } = useContext(ProjectManagementContext);
+  const { actionType, selectedProject, selectedEmployee } = useContext(
+    ProjectManagementContext
+  );
 
   if (actionType === "none") {
     return <GeneralPage />;
   }
   if (actionType === "creating") {
-    return <NewProject />;
+    return <ProjectForm />;
   }
   if (actionType === "editing") {
     return <Project project={selectedProject} />;
   }
   if (actionType === "editProject") {
-    return <EditProject project={selectedProject} />;
+    return <ProjectForm project={selectedProject} />;
+  }
+  if (actionType === "viewingProfile") {
+    return <EmployeeProfile employee={selectedEmployee} />;
+  }
+  if (actionType === "editingProfile") {
+    return <EditEmployee employee={selectedEmployee} />;
   }
 
   return null;
