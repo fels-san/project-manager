@@ -1,13 +1,13 @@
-import { useContext, useRef, useState, useEffect } from "react";
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities"
+import { React, useContext, useRef, useState, useEffect } from 'react';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
-import { ProjectManagementContext } from "../../../store/project-management-context";
+import { ProjectManagementContext } from '../../../store/project-management-context';
 
-import Check from "../../../assets/check-circle.svg";
-import Save from "../../../assets/check-lg.svg";
-import Pencil from "../../../assets/pencil-square.svg";
-import Delete from "../../../assets/x-square.svg";
+import Check from '../../../assets/check-circle.svg';
+import Save from '../../../assets/check-lg.svg';
+import Pencil from '../../../assets/pencil-square.svg';
+import Delete from '../../../assets/x-square.svg';
 
 export default function Task({ taskContent, projectId }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
@@ -31,7 +31,7 @@ export default function Task({ taskContent, projectId }) {
   }
 
   function handleSave(event) {
-    if (event.key && event.key !== "Enter") return;
+    if (event.key && event.key !== 'Enter') return;
     updateTask(projectId, { ...taskContent, title: input.current.value });
     setIsEditing((editing) => !editing);
   }
@@ -60,7 +60,7 @@ export default function Task({ taskContent, projectId }) {
             ref={input}
             className="w-4/5 bg-transparent focus:border-0 focus:outline-none"
           />
-          <button onClick={handleSave} title="Save">
+          <button type="button" onClick={handleSave} title="Save">
             <img src={Save} alt="check" />
           </button>
         </>
@@ -68,22 +68,24 @@ export default function Task({ taskContent, projectId }) {
         <>
           <p
             className={`whitespace-pre-wrap w-4/5${
-              taskContent.isCompleted ? " line-through" : ""
+              taskContent.isCompleted ? ' line-through' : ''
             }`}
           >
             {taskContent.title}
           </p>
           <div className="flex flex-row gap-2">
             <button
+              type="button"
               onClick={() => changeTaskStatus(projectId, taskContent.id)}
-              title={taskContent.isCompleted ? "Incomplete" : "Complete"}
+              title={taskContent.isCompleted ? 'Incomplete' : 'Complete'}
             >
               <img src={Check} alt="check-circle" />
             </button>
-            <button title="Edit" onClick={handleEditClick}>
+            <button type="button" title="Edit" onClick={handleEditClick}>
               <img src={Pencil} alt="pencil-square" />
             </button>
             <button
+              type="button"
               title="Delete"
               onClick={() => deleteTask(projectId, taskContent.id)}
             >
