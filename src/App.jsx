@@ -1,3 +1,5 @@
+import React from "react";
+
 import Sidebar from "./components/Sidebar";
 import CurrentPage from "./components/currentPage/CurrentPage";
 import Navigation from "./components/Navigation";
