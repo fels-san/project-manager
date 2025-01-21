@@ -1,16 +1,22 @@
-import { useContext, useRef, useEffect, useState } from "react";
+import {
+  React,
+  useContext,
+  useRef,
+  useEffect,
+  useState,
+  useCallback,
+} from 'react';
 
-import { ProjectManagementContext } from "../../../../store/project-management-context";
-import ContextMenu from "./ContextMenu";
-import EmployeeItem from "./EmployeeItem";
+import { ProjectManagementContext } from '../../../../store/project-management-context';
+
+import ContextMenu from './ContextMenu';
+import EmployeeItem from './EmployeeItem';
 
 export default function EmployeesList({
   selectedEmployees,
   onEmployeeSelection,
 }) {
   const { projects, employees } = useContext(ProjectManagementContext);
-
-  console.log(employees);
 
   const [contextMenu, setContextMenu] = useState({
     isVisible: false,
@@ -20,22 +26,22 @@ export default function EmployeesList({
 
   const menuRef = useRef(null);
 
-  function handleContextMenu(e, employee) {
+  const openContextMenu = useCallback((e, employee) => {
     e.preventDefault();
     setContextMenu({
       isVisible: true,
       position: { x: e.clientX, y: e.clientY },
       employee,
     });
-  }
+  }, []);
 
-  function closeContextMenu() {
+  const closeContextMenu = useCallback(() => {
     setContextMenu({
       isVisible: false,
       position: { x: 0, y: 0 },
       employee: null,
     });
-  }
+  }, []);
 
   useEffect(() => {
     function handleClickOutside(e) {
@@ -49,24 +55,23 @@ export default function EmployeesList({
     }
 
     if (contextMenu.isVisible) {
-      document.addEventListener("mousedown", handleClickOutside);
-      document.addEventListener("wheel", handleScroll);
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('wheel', handleScroll);
     } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("wheel", handleScroll);
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('wheel', handleScroll);
     }
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("wheel", handleScroll);
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('wheel', handleScroll);
     };
-  }, [contextMenu.isVisible]);
+  }, [contextMenu.isVisible, closeContextMenu]);
 
-  const getEmployeeProjectsCount = (employeeId) => {
-    return projects.filter((project) =>
+  const getEmployeeProjectsCount = (employeeId) =>
+    projects.filter((project) =>
       project.team.some((employee) => employee?.id === employeeId)
     ).length;
-  };
 
   return (
     <div className="w-full">
@@ -80,7 +85,7 @@ export default function EmployeesList({
             employee={employee}
             isSelected={selectedEmployees.includes(employee.name)}
             onSelect={onEmployeeSelection}
-            onContextMenu={handleContextMenu}
+            onContextMenu={openContextMenu}
             projectsCount={getEmployeeProjectsCount(employee.id)}
           />
         ))}

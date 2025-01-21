@@ -1,28 +1,27 @@
-import { useContext } from "react";
+import { useContext, React } from 'react';
 
-import { ProjectManagementContext } from "../../../../store/project-management-context";
+import { ProjectManagementContext } from '../../../../store/project-management-context';
 
 export default function ContextMenu({
   employee,
   menuRef,
   position,
   isVisible,
-  onClose,
 }) {
-  if (!isVisible) return null;
-
   const { selectEmployee, deleteEmployee } = useContext(
     ProjectManagementContext
   );
-
+  
   function handleDeleteEmployee() {
     const isEmployeeDeleted = confirm(
-      "Are you sure you want to delete this employee? This action cannot be undone."
+      'Are you sure you want to delete this employee? This action cannot be undone.'
     );
     if (isEmployeeDeleted) {
       deleteEmployee(employee.id);
     }
   }
+  
+  if (!isVisible) return null;
 
   return (
     <div
@@ -36,12 +35,14 @@ export default function ContextMenu({
       >
         <li>
           <button
+            type="button"
             onClick={() => selectEmployee(employee.id)}
             className="w-full text-left roundd-md px-1 hover:bg-stone-100"
           >
             Profile
           </button>
           <button
+            type="button"
             className="w-full text-left rounded-md px-1 hover:bg-stone-100"
             onClick={handleDeleteEmployee}
           >
