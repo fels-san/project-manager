@@ -1,40 +1,7 @@
-import { useContext } from "react";
+import { React, useContext } from 'react';
 
-import { ProjectManagementContext } from "../../store/project-management-context";
-import ProjectsList from "./generalPage/ProjectsList";
-
-function formatDateAge(birthDate) {
-  if (!birthDate) return;
-
-  const now = new Date();
-
-  const age = now.getFullYear() - birthDate.getFullYear();
-  const hasBirthdayPassed =
-    now.getMonth() > birthDate.getMonth() ||
-    (now.getMonth() === birthDate.getMonth() &&
-      now.getDate() >= birthDate.getDate());
-  const finalAge = hasBirthdayPassed ? age : age - 1;
-
-  const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
-  const formattedDate = `${birthDate.getDate()} ${
-    months[birthDate.getMonth()]
-  }. ${birthDate.getFullYear()}`;
-
-  return `${formattedDate} (${finalAge} years old)`;
-}
+import { ProjectManagementContext } from '../../store/project-management-context';
+import ProjectsList from './generalPage/ProjectsList';
 
 export default function EmployeeProfile({ employee }) {
   const { projects, editEmployee, deleteEmployee } = useContext(
@@ -47,11 +14,44 @@ export default function EmployeeProfile({ employee }) {
 
   function handleDeleteEmployee() {
     const isEmployeeDeleted = confirm(
-      "Are you sure you want to delete this employee? This action cannot be undone."
+      'Are you sure you want to delete this employee? This action cannot be undone.'
     );
     if (isEmployeeDeleted) {
       deleteEmployee(employee.id);
     }
+  }
+
+  function formatDateAge(birthDate) {
+    if (!birthDate) return {};
+
+    const now = new Date();
+
+    const age = now.getFullYear() - birthDate.getFullYear();
+    const hasBirthdayPassed =
+      now.getMonth() > birthDate.getMonth() ||
+      (now.getMonth() === birthDate.getMonth() &&
+        now.getDate() >= birthDate.getDate());
+    const finalAge = hasBirthdayPassed ? age : age - 1;
+
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+    const formattedDate = `${birthDate.getDate()} ${
+      months[birthDate.getMonth()]
+    }. ${birthDate.getFullYear()}`;
+
+    return `${formattedDate} (${finalAge} years old)`;
   }
 
   return (
@@ -69,7 +69,7 @@ export default function EmployeeProfile({ employee }) {
                 fillRule="evenodd"
                 d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
                 clipRule="evenodd"
-              ></path>
+              />
             </svg>
           </div>
 
@@ -78,21 +78,26 @@ export default function EmployeeProfile({ employee }) {
               {employee.name}
             </h2>
             <p>
-              <strong>Role:</strong> {employee.position ?? "N/A"}
+              <strong>Role:</strong> {employee.position ?? 'N/A'}
             </p>
             <p>
-              <strong>Birthdate:</strong> {formatDateAge(employee.birthDate) ?? "N/A"}
-            </p>{" "}
+              <strong>Birthdate:</strong>{' '}
+              {formatDateAge(employee.birthDate) ?? 'N/A'}
+            </p>{' '}
             <p>
-              <strong>Joined the company:</strong>{" "}
-              {employee.companyStartYear?.getFullYear() ?? "N/A"}
+              <strong>Joined the company:</strong>{' '}
+              {employee.companyStartYear?.getFullYear() ?? 'N/A'}
             </p>
           </div>
         </div>
 
         <div className="flex flex-col">
-          <button onClick={() => editEmployee()}>Edit</button>
-          <button onClick={handleDeleteEmployee}>Delete</button>
+          <button type="button" onClick={() => editEmployee()}>
+            Edit
+          </button>
+          <button type="button" onClick={handleDeleteEmployee}>
+            Delete
+          </button>
         </div>
       </header>
       <main className="mt-5">
@@ -101,10 +106,10 @@ export default function EmployeeProfile({ employee }) {
             Contact info
           </h2>
           <p>
-            <strong>Phone:</strong> {employee.phone ?? "N/A"}
+            <strong>Phone:</strong> {employee.phone ?? 'N/A'}
           </p>
           <p>
-            <strong>Email:</strong> {employee.email ?? "N/A"}
+            <strong>Email:</strong> {employee.email ?? 'N/A'}
           </p>
         </div>
         <div>
