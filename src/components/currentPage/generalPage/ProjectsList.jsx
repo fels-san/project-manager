@@ -9,11 +9,18 @@ export default function ProjectsList({ projects, isSearchResult = false }) {
       {projects.length > 0 ? (
         projects.map((project) => (
           <div
+            role="button"
+            tabIndex={0}
             key={project.id}
             className={`${
               project.isCompleted === true ? 'opacity-30' : ''
             } border-2 border-stone-900 rounded-md p-4 mb-4 cursor-pointer`}
             onClick={() => selectProject(project.id)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                selectProject(project.id);
+              }
+            }}
           >
             <div className="flex flex-row gap-2 items-baseline">
               <h3 className="text-base text-stone-800 font-semibold mb-2">

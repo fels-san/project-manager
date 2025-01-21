@@ -1,17 +1,17 @@
-import { useState, useContext, useCallback, useRef } from "react";
+import { React, useState, useContext, useCallback, useRef } from 'react';
 
-import { ProjectManagementContext } from "../../../store/project-management-context";
+import { ProjectManagementContext } from '../../../store/project-management-context';
 
-import ProjectsList from "./ProjectsList";
-import EmployeesList from "./employeesList/EmployeesList";
-import TagsList from "./TagsList";
-import SearchBar from "./SearchBar";
-import Dropdown from "./dropdown/Dropdown";
+import ProjectsList from './ProjectsList';
+import EmployeesList from './employeesList/EmployeesList';
+import TagsList from './TagsList';
+import SearchBar from './SearchBar';
+import Dropdown from './dropdown/Dropdown';
 
 export default function GeneralPage() {
-  const [searchText, setSearchText] = useState("");
+  const [searchText, setSearchText] = useState('');
   const { projects } = useContext(ProjectManagementContext);
-  const [sortType, setSortType] = useState("By Project Status");
+  const [sortType, setSortType] = useState('By Project Status');
   const [isDescending, setIsDescending] = useState(true);
   const [selectedTags, setSelectedTags] = useState([]);
   const [selectedEmployees, setSelectedEmployees] = useState([]);
@@ -28,30 +28,28 @@ export default function GeneralPage() {
     setSearchText(value);
   }, []);
 
-  const handleSortChange = useCallback((type, isDescending) => {
+  const handleSortChange = useCallback((type, descending) => {
     setSortType(type);
-    setIsDescending(isDescending);
+    setIsDescending(descending);
   }, []);
 
-  function handleTagSelection(tag) {
+  const handleTagSelection = useCallback((tag) => {
     setSelectedTags((prevTags) => {
       if (prevTags.includes(tag)) {
         return prevTags.filter((t) => t !== tag);
-      } else {
-        return [...prevTags, tag];
       }
+      return [...prevTags, tag];
     });
-  }
+  },[]);
 
-  function handleEmployeeSelection(employee) {
+  const handleEmployeeSelection = useCallback((employee) => {
     setSelectedEmployees((prevEmployees) => {
       if (prevEmployees.includes(employee)) {
         return prevEmployees.filter((t) => t !== employee);
-      } else {
-        return [...prevEmployees, employee];
       }
+      return [...prevEmployees, employee];
     });
-  }
+  }, []);
 
   function getFilteredProjects() {
     scrollToTop();
@@ -76,15 +74,16 @@ export default function GeneralPage() {
       let comparison = 0;
 
       switch (sortType) {
-        case "By Creation Date":
+        case 'By Creation Date':
           comparison = b.id - a.id;
           break;
 
-        case "By Project Status":
-          const statusA = a.isCompleted ? "completed" : "current";
-          const statusB = b.isCompleted ? "completed" : "current";
+        case 'By Project Status': {
+          const statusA = a.isCompleted ? 'completed' : 'current';
+          const statusB = b.isCompleted ? 'completed' : 'current';
           comparison = statusA.localeCompare(statusB);
           break;
+        }
 
         default:
           break;
@@ -109,20 +108,20 @@ export default function GeneralPage() {
             <Dropdown
               selectedOption={{
                 title: sortType,
-                isDescending: isDescending,
+                isDescending,
               }}
               options={[
-                { type: "By Creation Date", isDescending: true },
-                { type: "By Creation Date", isDescending: false },
-                { type: "By Project Status", isDescending: true },
-                { type: "By Project Status", isDescending: false },
+                { type: 'By Creation Date', isDescending: true },
+                { type: 'By Creation Date', isDescending: false },
+                { type: 'By Project Status', isDescending: true },
+                { type: 'By Project Status', isDescending: false },
               ]}
               onChange={handleSortChange}
             />
           </div>
           <ProjectsList
             projects={sortedProjects}
-            isSearchResult={searchText !== ""}
+            isSearchResult={searchText !== ''}
           />
         </div>
         <div className="w-1/5">

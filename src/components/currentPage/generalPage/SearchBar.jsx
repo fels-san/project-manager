@@ -1,3 +1,5 @@
+import React from "react";
+
 export default function SearchBar({ onSearchChange }) {
   return (
     <form>

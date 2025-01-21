@@ -1,6 +1,6 @@
-import { useContext } from "react";
+import { React, useContext } from 'react';
 
-import { ProjectManagementContext } from "../../../store/project-management-context";
+import { ProjectManagementContext } from '../../../store/project-management-context';
 
 export default function SearchResults({ filteredProjects }) {
   const { selectProject } = useContext(ProjectManagementContext);
@@ -10,11 +10,18 @@ export default function SearchResults({ filteredProjects }) {
       {filteredProjects.length > 0 ? (
         filteredProjects.map((project) => (
           <div
+            role="button"
+            tabIndex={0}
             key={project.id}
             className={`${
-              project.isCompleted === true ? "opacity-30" : ""
+              project.isCompleted === true ? 'opacity-30' : ''
             } border-2 border-stone-900 rounded-md p-4 mb-4 cursor-pointer`}
             onClick={() => selectProject(project.id)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                selectProject(project.id);
+              }
+            }}
           >
             <h3 className="text-base text-stone-800 font-semibold mb-2">
               {project.title}
@@ -22,8 +29,8 @@ export default function SearchResults({ filteredProjects }) {
             <p
               className="overflow-hidden text-ellipsis"
               style={{
-                display: "-webkit-box",
-                WebkitBoxOrient: "vertical",
+                display: '-webkit-box',
+                WebkitBoxOrient: 'vertical',
                 WebkitLineClamp: 5,
               }}
             >
