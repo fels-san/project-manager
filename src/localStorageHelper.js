@@ -1,6 +1,6 @@
-export const localStorageHelper = {
+const localStorageHelper = {
   getProjects() {
-    const storedProjects = JSON.parse(localStorage.getItem("projects")) || [];
+    const storedProjects = JSON.parse(localStorage.getItem('projects')) || [];
 
     return storedProjects.map((project) => ({
       ...project,
@@ -15,7 +15,7 @@ export const localStorageHelper = {
       ...project,
       isSelected: false,
     }));
-    localStorage.setItem("projects", JSON.stringify(updatedProjects));
+    localStorage.setItem('projects', JSON.stringify(updatedProjects));
   },
 
   addProject(project) {
@@ -78,7 +78,7 @@ export const localStorageHelper = {
     //   isSelected: !!project.isSelected,
     // }));
 
-    const storedEmployees = JSON.parse(localStorage.getItem("employees")) || [];
+    const storedEmployees = JSON.parse(localStorage.getItem('employees')) || [];
 
     return storedEmployees.map((employee) => ({
       ...employee,
@@ -97,7 +97,7 @@ export const localStorageHelper = {
     //     id: counter++,
     //   };
     // });
-    localStorage.setItem("employees", JSON.stringify(employees));
+    localStorage.setItem('employees', JSON.stringify(employees));
   },
 
   addEmployees(newEmployees) {
@@ -123,10 +123,12 @@ export const localStorageHelper = {
   },
 
   getCounter() {
-    return JSON.parse(localStorage.getItem("counter")) || 0;
+    return JSON.parse(localStorage.getItem('counter')) || 0;
   },
 
   setCounter(updatedCounter) {
-    localStorage.setItem("counter", JSON.stringify(updatedCounter));
+    localStorage.setItem('counter', JSON.stringify(updatedCounter));
   },
 };
+
+export default localStorageHelper;
