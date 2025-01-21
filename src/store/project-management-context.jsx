@@ -1,12 +1,12 @@
-import { createContext, useReducer } from "react";
-import { localStorageHelper } from "../localStorageHelper";
-import { arrayMove } from "@dnd-kit/sortable";
+import { React, createContext, useMemo, useReducer } from 'react';
+import { arrayMove } from '@dnd-kit/sortable';
+import { localStorageHelper } from '../localStorageHelper';
 
 export const ProjectManagementContext = createContext({
   projects: [],
   tags: [],
   employees: [],
-  actionType: "none",
+  actionType: 'none',
 
   selectedProject: null,
   selectedEmployee: null,
@@ -37,7 +37,7 @@ export const ProjectManagementContext = createContext({
 });
 
 function projectManagerReducer(state, action) {
-  if (action.type === "CREATE_PROJECT") {
+  if (action.type === 'CREATE_PROJECT') {
     const updatedProjects = state.projects.map((project) => ({
       ...project,
       isSelected: false,
@@ -46,33 +46,29 @@ function projectManagerReducer(state, action) {
     return {
       ...state,
       projects: updatedProjects,
-      actionType: "creating",
+      actionType: 'creating',
     };
   }
 
-  if (action.type === "ADD_PROJECT") {
+  if (action.type === 'ADD_PROJECT') {
     const updatedCounter = state.projectCounter + 1;
     const newProject = { ...action.payload, id: state.projectCounter };
 
     const existingTags = state.tags.map((tag) => tag.name);
     const updatedTags = newProject.tag
       .filter((tag) => !existingTags.includes(tag))
-      .map((tag) => {
-        return { name: tag };
-      });
+      .map((tag) => ({ name: tag }));
 
     const existingEmployeesNames = state.employees.map(
       (employee) => employee.name
     );
-    let lastId = state.employees[state.employees.length - 1]?.id;
 
     newProject.team = newProject.team.map((employee) => {
       const clone = state.employees.find((e) => e.name === employee.name);
       if (clone) {
         return clone;
-      } else {
-        return employee;
       }
+      return employee;
     });
 
     const newEmployees = newProject.team.filter(
@@ -93,28 +89,28 @@ function projectManagerReducer(state, action) {
       projectCounter: updatedCounter,
       tags: [...state.tags, ...updatedTags],
       employees: updatedEmployees,
-      actionType: "none",
+      actionType: 'none',
     };
   }
 
-  if (action.type === "EDIT_PROJECT") {
+  if (action.type === 'EDIT_PROJECT') {
     return {
       ...state,
-      actionType: "editProject",
+      actionType: 'editProject',
     };
   }
 
-  if (action.type === "DELETE_PROJECT") {
+  if (action.type === 'DELETE_PROJECT') {
     const updatedProjects = state.projects.filter(
       (project) => project.id !== action.payload
     );
 
     localStorageHelper.deleteProject(action.payload);
 
-    return { ...state, projects: updatedProjects, actionType: "none" };
+    return { ...state, projects: updatedProjects, actionType: 'none' };
   }
 
-  if (action.type === "UPDATE_PROJECT") {
+  if (action.type === 'UPDATE_PROJECT') {
     const updatedProject = {
       ...action.payload.project,
       ...action.payload.updatedProject,
@@ -128,9 +124,8 @@ function projectManagerReducer(state, action) {
       const clone = state.employees.find((e) => e.name === employee.name);
       if (clone) {
         return clone;
-      } else {
-        return employee;
       }
+      return employee;
     });
 
     const newEmployees = updatedProject.team.filter(
@@ -159,18 +154,18 @@ function projectManagerReducer(state, action) {
       projects: updatedProjects,
       tags: updatedTags,
       employees: updatedEmployees,
-      actionType: "editing",
+      actionType: 'editing',
     };
   }
 
-  if (action.type === "CANCEL_PROJECT") {
+  if (action.type === 'CANCEL_PROJECT') {
     return {
       ...state,
-      actionType: "none",
+      actionType: 'none',
     };
   }
 
-  if (action.type === "CHANGE_PROJECT_STATUS") {
+  if (action.type === 'CHANGE_PROJECT_STATUS') {
     const updatedProjects = state.projects.map((project) =>
       project.id === action.payload
         ? {
@@ -188,35 +183,33 @@ function projectManagerReducer(state, action) {
     return {
       ...state,
       projects: updatedProjects,
-      actionType: "editing",
+      actionType: 'editing',
     };
   }
 
-  if (action.type === "CANCEL_EDITING") {
+  if (action.type === 'CANCEL_EDITING') {
     return {
       ...state,
-      actionType: "editing",
+      actionType: 'editing',
     };
   }
 
-  if (action.type === "EDIT_EMPLOYEE") {
+  if (action.type === 'EDIT_EMPLOYEE') {
     return {
       ...state,
-      actionType: "editingProfile",
+      actionType: 'editingProfile',
     };
   }
 
-  if (action.type === "DELETE_EMPLOYEE") {
+  if (action.type === 'DELETE_EMPLOYEE') {
     const updatedEmployees = state.employees.filter(
       (employee) => employee.id !== action.payload
     );
 
-    const updatedProjects = state.projects.map((project) => {
-      return {
-        ...project,
-        team: project.team.filter((employee) => employee.id !== action.payload),
-      };
-    });
+    const updatedProjects = state.projects.map((project) => ({
+      ...project,
+      team: project.team.filter((employee) => employee.id !== action.payload),
+    }));
 
     localStorageHelper.saveProjects(updatedProjects);
     localStorageHelper.deleteEmployee(action.payload);
@@ -225,11 +218,11 @@ function projectManagerReducer(state, action) {
       ...state,
       projects: updatedProjects,
       employees: updatedEmployees,
-      actionType: "none",
+      actionType: 'none',
     };
   }
 
-  if (action.type === "UPDATE_EMPLOYEE") {
+  if (action.type === 'UPDATE_EMPLOYEE') {
     const updatedEmployees = state.employees.map((employee) => {
       if (employee.id === action.payload.updatedEmployee.id) {
         return {
@@ -249,11 +242,11 @@ function projectManagerReducer(state, action) {
     return {
       ...state,
       employees: updatedEmployees,
-      actionType: "viewingProfile",
+      actionType: 'viewingProfile',
     };
   }
 
-  if (action.type === "ADD_TASK") {
+  if (action.type === 'ADD_TASK') {
     const updatedCounter = action.payload.taskId + 1;
 
     const newTask = {
@@ -277,7 +270,7 @@ function projectManagerReducer(state, action) {
     return { ...state, projects: updatedProjects };
   }
 
-  if (action.type === "UPDATE_TASK") {
+  if (action.type === 'UPDATE_TASK') {
     const updatedProjects = state.projects.map((project) => {
       if (project.id !== action.payload.projectId) return project;
       return {
@@ -298,11 +291,11 @@ function projectManagerReducer(state, action) {
     return {
       ...state,
       projects: updatedProjects,
-      actionType: "editing",
+      actionType: 'editing',
     };
   }
 
-  if (action.type === "DELETE_TASK") {
+  if (action.type === 'DELETE_TASK') {
     const updatedProjects = state.projects.map((project) =>
       project.id === action.payload.projectId
         ? {
@@ -322,7 +315,7 @@ function projectManagerReducer(state, action) {
     return { ...state, projects: updatedProjects };
   }
 
-  if (action.type === "UPDATE_TASK_ORDER") {
+  if (action.type === 'UPDATE_TASK_ORDER') {
     const updatedProjects = state.projects.map((project) =>
       project.id === action.payload.projectId
         ? {
@@ -344,7 +337,7 @@ function projectManagerReducer(state, action) {
     return { ...state, projects: updatedProjects };
   }
 
-  if (action.type === "CHANGE_TASK_STATUS") {
+  if (action.type === 'CHANGE_TASK_STATUS') {
     const updatedProjects = state.projects.map((project) => {
       if (project.id !== action.payload.projectId) return project;
       return {
@@ -365,56 +358,58 @@ function projectManagerReducer(state, action) {
     return {
       ...state,
       projects: updatedProjects,
-      actionType: "editing",
+      actionType: 'editing',
     };
   }
 
-  if (action.type === "SELECT_PROJECT") {
+  if (action.type === 'SELECT_PROJECT') {
     const updatedProjects = state.projects.map((project) => ({
       ...project,
-      isSelected: project.id === action.payload ? true : false,
+      isSelected: project.id === action.payload,
     }));
 
     return {
       ...state,
       projects: updatedProjects,
-      actionType: "editing",
+      actionType: 'editing',
     };
   }
 
-  if (action.type === "SELECT_EMPLOYEE") {
+  if (action.type === 'SELECT_EMPLOYEE') {
     const updatedEmployees = state.employees.map((employee) => ({
       ...employee,
-      isSelected: employee.id === action.payload ? true : false,
+      isSelected: employee.id === action.payload,
     }));
 
     return {
       ...state,
       employees: updatedEmployees,
-      actionType: "viewingProfile",
+      actionType: 'viewingProfile',
     };
   }
 
-  if (action.type === "CHANGE_PAGE") {
-    if (action.payload === "general") {
+  if (action.type === 'CHANGE_PAGE') {
+    if (action.payload === 'general') {
       return {
         ...state,
-        actionType: "none",
+        actionType: 'none',
       };
     }
-    if (action.payload === "current project") {
+    if (action.payload === 'current project') {
       return {
         ...state,
-        actionType: "editing",
+        actionType: 'editing',
       };
     }
-    if (action.payload === "new project") {
+    if (action.payload === 'new project') {
       return {
         ...state,
-        actionType: "creating",
+        actionType: 'creating',
       };
     }
   }
+
+  return state;
 }
 
 const storedProjects = [...localStorageHelper.getProjects()].reverse();
@@ -426,96 +421,96 @@ export default function ProjectManagementContextProvider({ children }) {
     projectManagerReducer,
     {
       projects: storedProjects,
-      actionType: "none",
+      actionType: 'none',
       projectCounter: storedCounter,
       employees: storedEmployees,
       tags: [
-        { name: "Web Design", count: 5 },
-        { name: "Mobile Development", count: 3 },
-        { name: "E-commerce", count: 4 },
-        { name: "UI/UX Design", count: 6 },
-        { name: "Responsive Design", count: 2 },
-        { name: "Branding", count: 3 },
-        { name: "User Experience", count: 7 },
+        { name: 'Web Design', count: 5 },
+        { name: 'Mobile Development', count: 3 },
+        { name: 'E-commerce', count: 4 },
+        { name: 'UI/UX Design', count: 6 },
+        { name: 'Responsive Design', count: 2 },
+        { name: 'Branding', count: 3 },
+        { name: 'User Experience', count: 7 },
       ],
     }
   );
 
   function handleCreateProject() {
     projectManagerDispatch({
-      type: "CREATE_PROJECT",
+      type: 'CREATE_PROJECT',
     });
   }
 
   function handleAddProject(project) {
     projectManagerDispatch({
-      type: "ADD_PROJECT",
+      type: 'ADD_PROJECT',
       payload: project,
     });
   }
 
   function handleEditProject() {
     projectManagerDispatch({
-      type: "EDIT_PROJECT",
+      type: 'EDIT_PROJECT',
     });
   }
 
   function handleDeleteProject(removedProjectId) {
     projectManagerDispatch({
-      type: "DELETE_PROJECT",
+      type: 'DELETE_PROJECT',
       payload: removedProjectId,
     });
   }
 
   function handleUpdateProject(project, updatedProject) {
     projectManagerDispatch({
-      type: "UPDATE_PROJECT",
+      type: 'UPDATE_PROJECT',
       payload: { project, updatedProject },
     });
   }
 
   function handleCancelProject() {
     projectManagerDispatch({
-      type: "CANCEL_PROJECT",
+      type: 'CANCEL_PROJECT',
     });
   }
 
   function handleChangeProjectStatus(projectId) {
     projectManagerDispatch({
-      type: "CHANGE_PROJECT_STATUS",
+      type: 'CHANGE_PROJECT_STATUS',
       payload: projectId,
     });
   }
 
   function handleCancelEditing() {
     projectManagerDispatch({
-      type: "CANCEL_EDITING",
+      type: 'CANCEL_EDITING',
     });
   }
 
   function handleEditEmployee() {
     projectManagerDispatch({
-      type: "EDIT_EMPLOYEE",
+      type: 'EDIT_EMPLOYEE',
     });
   }
 
   function handleDeleteEmployee(removedEmployeeId) {
     projectManagerDispatch({
-      type: "DELETE_EMPLOYEE",
+      type: 'DELETE_EMPLOYEE',
       payload: removedEmployeeId,
     });
   }
 
   function handleUpdateEmployee(updatedEmployee) {
     projectManagerDispatch({
-      type: "UPDATE_EMPLOYEE",
+      type: 'UPDATE_EMPLOYEE',
       payload: { updatedEmployee },
     });
   }
 
   function handleAddTask(projectId, taskTitle, taskId) {
     projectManagerDispatch({
-      type: "ADD_TASK",
+      type: 'ADD_TASK',
       payload: {
         projectId,
         taskTitle,
@@ -526,7 +521,7 @@ export default function ProjectManagementContextProvider({ children }) {
 
   function handleUpdateTask(projectId, task) {
     projectManagerDispatch({
-      type: "UPDATE_TASK",
+      type: 'UPDATE_TASK',
       payload: {
         projectId,
         task,
@@ -536,7 +531,7 @@ export default function ProjectManagementContextProvider({ children }) {
 
   function handleDeleteTask(projectId, taskId) {
     projectManagerDispatch({
-      type: "DELETE_TASK",
+      type: 'DELETE_TASK',
       payload: {
         projectId,
         taskId,
@@ -546,7 +541,7 @@ export default function ProjectManagementContextProvider({ children }) {
 
   function handleUpdateTaskOrder(projectId, originalPos, newPos) {
     projectManagerDispatch({
-      type: "UPDATE_TASK_ORDER",
+      type: 'UPDATE_TASK_ORDER',
       payload: {
         projectId,
         originalPos,
@@ -557,7 +552,7 @@ export default function ProjectManagementContextProvider({ children }) {
 
   function handleChangeTaskStatus(projectId, taskId) {
     projectManagerDispatch({
-      type: "CHANGE_TASK_STATUS",
+      type: 'CHANGE_TASK_STATUS',
       payload: {
         projectId,
         taskId,
@@ -567,62 +562,70 @@ export default function ProjectManagementContextProvider({ children }) {
 
   function handleSelectProject(selectedId) {
     projectManagerDispatch({
-      type: "SELECT_PROJECT",
+      type: 'SELECT_PROJECT',
       payload: selectedId,
     });
   }
 
   function handleSelectEmployee(selectedId) {
     projectManagerDispatch({
-      type: "SELECT_EMPLOYEE",
+      type: 'SELECT_EMPLOYEE',
       payload: selectedId,
     });
   }
 
   function handleChangePage(pageName) {
     projectManagerDispatch({
-      type: "CHANGE_PAGE",
+      type: 'CHANGE_PAGE',
       payload: pageName,
     });
   }
 
-  const ctxValue = {
-    projects: projectManagerState.projects,
-    tags: projectManagerState.tags,
-    employees: projectManagerState.employees,
-    actionType: projectManagerState.actionType,
+  const ctxValue = useMemo(
+    () => ({
+      projects: projectManagerState.projects,
+      tags: projectManagerState.tags,
+      employees: projectManagerState.employees,
+      actionType: projectManagerState.actionType,
 
-    selectedProject: projectManagerState.projects.find(
-      (item) => item.isSelected === true
-    ),
-    selectedEmployee: projectManagerState.employees.find(
-      (item) => item.isSelected === true
-    ),
+      selectedProject: projectManagerState.projects.find(
+        (item) => item.isSelected === true
+      ),
+      selectedEmployee: projectManagerState.employees.find(
+        (item) => item.isSelected === true
+      ),
 
-    createProject: handleCreateProject,
-    addProject: handleAddProject,
-    editProject: handleEditProject,
-    deleteProject: handleDeleteProject,
-    updateProject: handleUpdateProject,
-    cancelProject: handleCancelProject,
-    changeProjectStatus: handleChangeProjectStatus,
-    cancelEditing: handleCancelEditing,
+      createProject: handleCreateProject,
+      addProject: handleAddProject,
+      editProject: handleEditProject,
+      deleteProject: handleDeleteProject,
+      updateProject: handleUpdateProject,
+      cancelProject: handleCancelProject,
+      changeProjectStatus: handleChangeProjectStatus,
+      cancelEditing: handleCancelEditing,
 
-    editEmployee: handleEditEmployee,
-    deleteEmployee: handleDeleteEmployee,
-    updateEmployee: handleUpdateEmployee,
+      editEmployee: handleEditEmployee,
+      deleteEmployee: handleDeleteEmployee,
+      updateEmployee: handleUpdateEmployee,
 
-    addTask: handleAddTask,
-    updateTask: handleUpdateTask,
-    deleteTask: handleDeleteTask,
-    updateTaskOrder: handleUpdateTaskOrder,
-    changeTaskStatus: handleChangeTaskStatus,
+      addTask: handleAddTask,
+      updateTask: handleUpdateTask,
+      deleteTask: handleDeleteTask,
+      updateTaskOrder: handleUpdateTaskOrder,
+      changeTaskStatus: handleChangeTaskStatus,
 
-    selectProject: handleSelectProject,
-    selectEmployee: handleSelectEmployee,
+      selectProject: handleSelectProject,
+      selectEmployee: handleSelectEmployee,
 
-    changePage: handleChangePage,
-  };
+      changePage: handleChangePage,
+    }),
+    [
+      projectManagerState.projects,
+      projectManagerState.tags,
+      projectManagerState.employees,
+      projectManagerState.actionType,
+    ]
+  );
 
   return (
     <ProjectManagementContext.Provider value={ctxValue}>
