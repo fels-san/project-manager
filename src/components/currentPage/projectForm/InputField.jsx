@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { React, useState } from 'react';
 
 export default function InputField({
   label,
-  type = "text",
-  defaultValue = "",
+  type = 'text',
+  defaultValue = '',
   onAddItem,
   onChange,
   suggestionsList = [],
@@ -15,7 +15,7 @@ export default function InputField({
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
 
   const handleInputChange = (e) => {
-    const value = e.target.value;
+    const { value } = e.target;
     setInputValue(value);
 
     if (onChange) {
@@ -33,13 +33,13 @@ export default function InputField({
   };
 
   function handleAddItem(event) {
-    if (event.key !== "Enter" || !isListInput) return;
+    if (event.key !== 'Enter' || !isListInput) return;
 
     const value = inputValue.trim();
 
     if (value) {
       onAddItem(value);
-      setInputValue("");
+      setInputValue('');
       setFilteredSuggestions([]);
     }
   }
@@ -51,11 +51,17 @@ export default function InputField({
 
   return (
     <div className="mt-4">
-      <label className={"uppercase font-bold text-stone-600"}>{label}</label>
+      <label
+        htmlFor={isTextArea ? 'textarea-id' : 'input-id'}
+        className="uppercase font-bold text-stone-600"
+      >
+        {label}
+      </label>
       {isTextArea ? (
         <textarea
+          id="textarea-id"
           className={`${
-            hasError ? "border-red-500 " : "border-stone-300 "
+            hasError ? 'border-red-500 ' : 'border-stone-300 '
           }bg-stone-200 w-full h-20 px-2 mt-1 border-b-2 focus:outline-none focus:border-b-2 focus:border-stone-900`}
           type={type}
           defaultValue={defaultValue}
@@ -64,8 +70,9 @@ export default function InputField({
         />
       ) : (
         <input
+          id="input-id"
           className={`${
-            hasError ? "border-red-500 " : "border-stone-300 "
+            hasError ? 'border-red-500 ' : 'border-stone-300 '
           }bg-stone-200 w-full h-10 px-2 mt-1 border-b-2 focus:outline-none focus:border-b-2 focus:border-stone-900`}
           type={type}
           value={inputValue}
@@ -78,13 +85,20 @@ export default function InputField({
         <div className="text-stone-500 italic text-sm mt-2">
           <p>Maybe you meant:</p>
           <ul>
-            {filteredSuggestions.map((suggestion, index) => (
-              <li
-                key={index}
-                className="font-semibold"
-                onClick={() => handleSuggestionClick(suggestion)}
-              >
-                {suggestion}
+            {filteredSuggestions.map((suggestion) => (
+              <li key={suggestion} className="font-semibold">
+                <button
+                  type="button"
+                  tabIndex={0}
+                  onClick={() => handleSuggestionClick(suggestion)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      handleSuggestionClick(suggestion);
+                    }
+                  }}
+                >
+                  {suggestion}
+                </button>
               </li>
             ))}
           </ul>

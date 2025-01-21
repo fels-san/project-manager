@@ -1,34 +1,33 @@
-import { useState, useContext } from "react";
-import { v4 as uuidv4 } from "uuid";
+import { React, useState, useContext, useCallback } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
-import { ProjectManagementContext } from "../../../store/project-management-context";
+import { ProjectManagementContext } from '../../../store/project-management-context';
 
-import ListDisplay from "./ListDisplay";
-import InputField from "./InputField";
+import ListDisplay from './ListDisplay';
+import InputField from './InputField';
 
 function formatDate(date) {
-  if (!date) return "";
+  if (!date) return '';
   const d = new Date(date);
   const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
 }
 
 export default function ProjectForm({ project = null }) {
-  const { employees, cancelProject, cancelEditing, addProject, updateProject } = useContext(
-    ProjectManagementContext
-  );
+  const { employees, cancelProject, cancelEditing, addProject, updateProject } =
+    useContext(ProjectManagementContext);
 
   const [tags, setTags] = useState(project ? project.tag : []);
   const [team, setTeam] = useState(project ? project.team : []);
   const [errors, setErrors] = useState({});
 
   const [formData, setFormData] = useState({
-    title: project ? project.title : "",
-    description: project ? project.description : "",
-    dueDate: project ? formatDate(project.dueDate) : "",
-    startDate: project ? formatDate(project.startDate) : "",
+    title: project ? project.title : '',
+    description: project ? project.description : '',
+    dueDate: project ? formatDate(project.dueDate) : '',
+    startDate: project ? formatDate(project.startDate) : '',
   });
 
   const suggestionsList = employees.map((employee) => employee.name);
@@ -45,7 +44,7 @@ export default function ProjectForm({ project = null }) {
     if (Object.keys(newErrors).length > 0) return;
 
     const correctedTeam = team.map((employee) => {
-      if (typeof employee === "object")
+      if (typeof employee === 'object')
         return {
           id: uuidv4(),
           ...employee,
@@ -82,13 +81,13 @@ export default function ProjectForm({ project = null }) {
     }
   }
 
-  function handleAddTeamMember(newMember) {
+  const handleAddTeamMember = useCallback((newMember) => {
     setTeam((prevTeam) => [...prevTeam, newMember]);
-  }
+  }, []);
 
-  function handleAddTag(newTag) {
+  const handleAddTag = useCallback((newTag) => {
     setTags((prevTags) => [...prevTags, newTag]);
-  }
+  }, []);
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -100,41 +99,44 @@ export default function ProjectForm({ project = null }) {
         label="Title"
         hasError={errors.title}
         defaultValue={formData.title}
-        onChange={(e) => handleChange("title", e.target.value)}
+        onChange={(e) => handleChange('title', e.target.value)}
       />
       <InputField
         label="Description"
-        isTextArea={true}
+        isTextArea
         hasError={errors.description}
         defaultValue={formData.description}
-        onChange={(e) => handleChange("description", e.target.value)}
+        onChange={(e) => handleChange('description', e.target.value)}
       />
       <InputField
         label="Start date"
         type="date"
         hasError={errors.startDate}
         defaultValue={formData.startDate}
-        onChange={(e) => handleChange("startDate", e.target.value)}
+        onChange={(e) => handleChange('startDate', e.target.value)}
       />
       <InputField
         label="Due date"
         type="date"
         hasError={errors.dueDate}
         defaultValue={formData.dueDate}
-        onChange={(e) => handleChange("dueDate", e.target.value)}
+        onChange={(e) => handleChange('dueDate', e.target.value)}
       />
       <InputField
         label="Team members"
         suggestionsList={suggestionsList}
-        isListInput={true}
+        isListInput
         onAddItem={handleAddTeamMember}
       />
       <ListDisplay list={team} setList={setTeam} />
-      <InputField label="Tags" isListInput={true} onAddItem={handleAddTag} />
+      <InputField label="Tags" isListInput onAddItem={handleAddTag} />
       <ListDisplay list={tags} setList={setTags} />
       <div className="flex flex-row justify-end gap-3 mb-2 mt-2">
-        <button onClick={project ? cancelProject : cancelEditing}>Cancel</button>
+        <button type="button" onClick={project ? cancelProject : cancelEditing}>
+          Cancel
+        </button>
         <button
+          type="button"
           onClick={handleSave}
           className="bg-stone-700 text-stone-50 rounded-md px-6 py-2"
         >
