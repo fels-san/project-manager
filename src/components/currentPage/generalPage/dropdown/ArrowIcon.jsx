@@ -1,8 +1,10 @@
+import React from 'react';
+
 export default function ArrowIcon({ isOpen }) {
   return (
     <svg
       className={`ml-2 w-4 h-4 transform transition-transform ${
-        isOpen ? "rotate-180" : "rotate-0"
+        isOpen ? 'rotate-180' : 'rotate-0'
       }`}
       aria-hidden="true"
       fill="none"
@@ -15,7 +17,7 @@ export default function ArrowIcon({ isOpen }) {
         strokeLinejoin="round"
         strokeWidth="2"
         d="M19 9l-7 7-7-7"
-      ></path>
+      />
     </svg>
   );
 }
