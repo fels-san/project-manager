@@ -1,4 +1,4 @@
-import { React, useState } from 'react';
+import { React, useCallback, useState } from 'react';
 
 import DropdownItem from './DropdownItem';
 import SortIcon from './SortIcon';
@@ -16,27 +16,29 @@ export default function Dropdown({
     setIsDropdownOpen((prev) => !prev);
   };
 
-  function handleSelect(...options) {
-    onChange(...options);
-    setIsDropdownOpen(false);
-  }
+  const handleSelect = useCallback(
+    (type, isDescending) => {
+      onChange(type, isDescending);
+
+      toggleDropdown();
+    },
+    [onChange]
+  );
 
   return (
     <div className="relative">
       <button
         className={`${
-          style
-            ? style
-            : 'text-white w-48 bg-stone-700 hover:bg-stone-800 focus:outline-none font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center justify-around'
+          style ??
+          'text-white w-48 bg-stone-700 hover:bg-stone-800 focus:outline-none font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center justify-around'
         }`}
         type="button"
         onClick={toggleDropdown}
       >
-        {selectedOption.title + ' '}
-        {selectedOption.isDescending !== null &&
-        selectedOption.isDescending !== undefined ? (
+        {`${selectedOption.title} `}
+        {selectedOption.isDescending != null && (
           <SortIcon isDescending={selectedOption.isDescending} />
-        ) : null}
+        )}
         <ArrowIcon isOpen={isDropdownOpen} />
       </button>
 
@@ -46,16 +48,14 @@ export default function Dropdown({
             className="p-3 space-y-1 text-sm text-stone-700"
             aria-labelledby="dropdownBgHoverButton"
           >
-            {options.map((option, index) => {
-              return (
-                <DropdownItem
-                  key={index}
-                  onSelect={handleSelect}
-                  type={option.type}
-                  isDescending={option.isDescending}
-                />
-              );
-            })}
+            {options.map((option) => (
+              <DropdownItem
+                key={option.type + option.isDescending}
+                onSelect={() => handleSelect(option.type, option.isDescending)}
+                type={option.type}
+                isDescending={option.isDescending}
+              />
+            ))}
           </ul>
         </div>
       )}

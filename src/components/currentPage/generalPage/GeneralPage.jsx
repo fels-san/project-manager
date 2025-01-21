@@ -6,7 +6,7 @@ import ProjectsList from "./ProjectsList";
 import EmployeesList from "./employeesList/EmployeesList";
 import TagsList from "./TagsList";
 import SearchBar from "./SearchBar";
-import Dropdown from "./dropdown/DropDown";
+import Dropdown from "./dropdown/Dropdown";
 
 export default function GeneralPage() {
   const [searchText, setSearchText] = useState("");
