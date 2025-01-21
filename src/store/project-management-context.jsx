@@ -1,6 +1,6 @@
 import { React, createContext, useMemo, useReducer } from 'react';
 import { arrayMove } from '@dnd-kit/sortable';
-import { localStorageHelper } from '../localStorageHelper';
+import localStorageHelper from '../localStorageHelper';
 
 export const ProjectManagementContext = createContext({
   projects: [],
