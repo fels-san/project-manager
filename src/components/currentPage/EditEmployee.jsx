@@ -1,11 +1,15 @@
-import { React, useState, useContext } from 'react';
+// import { React, useState, useContext } from 'react';
+import { React, useState } from 'react';
+import { useDispatch } from "react-redux";
 
-import { ProjectManagementContext } from '../../store/project-management-context';
+// import { ProjectManagementContext } from '../../store/project-management-context';
+import { projectManagementActions } from '../../store/projectManagementSlice';
 
 import InputField from './projectForm/InputField';
 
 export default function EditEmployee({ employee }) {
-  const { updateEmployee } = useContext(ProjectManagementContext);
+  const dispatch = useDispatch();
+  // const { updateEmployee } = useContext(ProjectManagementContext);
 
   const [formData, setFormData] = useState({
     id: employee.id,
@@ -28,10 +32,12 @@ export default function EditEmployee({ employee }) {
 
   const handleSave = () => {
     if (!formData.name) {
+      // eslint-disable-next-line no-alert
       alert('Name are required');
       return;
     }
-    updateEmployee(formData);
+    dispatch(projectManagementActions.updateEmployee(formData));
+    // updateEmployee(formData);
   };
 
   return (

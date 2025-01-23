@@ -3,7 +3,7 @@ import React from "react";
 import Sidebar from "./components/Sidebar";
 import CurrentPage from "./components/currentPage/CurrentPage";
 import Navigation from "./components/Navigation";
-import ProjectManagementContextProvider from "./store/project-management-context";
+// import ProjectManagementContextProvider from "./store/project-management-context";
 
 function MainContent() {
   return (
@@ -16,12 +16,12 @@ function MainContent() {
 
 function App() {
   return (
-    <ProjectManagementContextProvider>
+    // <ProjectManagementContextProvider>
       <div className="h-screen flex pt-8">
         <Sidebar />
         <MainContent />
       </div>
-    </ProjectManagementContextProvider>
+    // </ProjectManagementContextProvider>
   );
 }
 

@@ -1,4 +1,6 @@
-import { React, useContext, useState } from 'react';
+// import { React, useContext, useState } from 'react';
+import { React, useState } from 'react';
+import { useDispatch } from "react-redux";
 import {
   closestCorners,
   DndContext,
@@ -11,11 +13,14 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 
-import { ProjectManagementContext } from '../../../store/project-management-context';
+// import { ProjectManagementContext } from '../../../store/project-management-context';
+import { projectManagementActions } from "../../../store/projectManagementSlice";
+
 import Task from './Task';
 
 export default function ProjectTasks({ project }) {
-  const { addTask, updateTaskOrder } = useContext(ProjectManagementContext);
+  // const { addTask, updateTaskOrder } = useContext(ProjectManagementContext);
+  const dispatch = useDispatch();
 
   const sensors = useSensors(
     useSensor(MouseSensor, {
@@ -30,7 +35,7 @@ export default function ProjectTasks({ project }) {
 
     const title = taskTitle.trim();
     if (title) {
-      addTask(project.id, title, project.taskCounter);
+      dispatch(projectManagementActions.addTask(project.id, title, project.taskCounter));
       setTaskTitle('');
     }
   }
@@ -45,7 +50,8 @@ export default function ProjectTasks({ project }) {
     const originalPos = getTaskPos(active.id);
     const newPos = getTaskPos(over.id);
 
-    updateTaskOrder(project.id, originalPos, newPos);
+    // updateTaskOrder(project.id, originalPos, newPos);
+    dispatch(projectManagementActions.updateTaskOrder(project.id, originalPos, newPos));
   };
 
   return (

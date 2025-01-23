@@ -1,9 +1,17 @@
-import { React, useContext } from 'react';
+// import { React, useContext } from 'react';
+import { React } from "react";
+import { useDispatch } from "react-redux";
 
-import { ProjectManagementContext } from '../../../store/project-management-context';
+// import { ProjectManagementContext } from '../../../store/project-management-context';
+import { projectManagementActions } from "../../../store/projectManagementSlice";
 
 export default function SearchResults({ filteredProjects }) {
-  const { selectProject } = useContext(ProjectManagementContext);
+  const dispatch = useDispatch();
+  // const { selectProject } = useContext(ProjectManagementContext);
+
+  function handleSelectProject(projectId) {
+    dispatch(projectManagementActions.selectProject(projectId));
+  }
 
   return (
     <div>
@@ -14,12 +22,12 @@ export default function SearchResults({ filteredProjects }) {
             tabIndex={0}
             key={project.id}
             className={`${
-              project.isCompleted === true ? 'opacity-30' : ''
+              project.isCompleted === true ? "opacity-30" : ""
             } border-2 border-stone-900 rounded-md p-4 mb-4 cursor-pointer`}
-            onClick={() => selectProject(project.id)}
+            onClick={() => handleSelectProject(project.id)}
             onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                selectProject(project.id);
+              if (e.key === "Enter" || e.key === " ") {
+                handleSelectProject(project.id);
               }
             }}
           >
@@ -29,8 +37,8 @@ export default function SearchResults({ filteredProjects }) {
             <p
               className="overflow-hidden text-ellipsis"
               style={{
-                display: '-webkit-box',
-                WebkitBoxOrient: 'vertical',
+                display: "-webkit-box",
+                WebkitBoxOrient: "vertical",
                 WebkitLineClamp: 5,
               }}
             >

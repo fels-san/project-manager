@@ -1,9 +1,18 @@
-import { React, useContext } from 'react';
+// import { React, useContext } from 'react';
+import { React } from "react";
+import { useDispatch } from "react-redux";
 
-import { ProjectManagementContext } from '../../../store/project-management-context';
+// import { ProjectManagementContext } from '../../../store/project-management-context';
+import { projectManagementActions } from "../../../store/projectManagementSlice";
 
 export default function ProjectsList({ projects, isSearchResult = false }) {
-  const { selectProject } = useContext(ProjectManagementContext);
+  // const { selectProject } = useContext(ProjectManagementContext);
+  const dispatch = useDispatch();
+
+  function handleSelectProject(projectId) {
+    dispatch(projectManagementActions.selectProject(projectId));
+  }
+
   return (
     <div className="pb-3">
       {projects.length > 0 ? (
@@ -13,12 +22,12 @@ export default function ProjectsList({ projects, isSearchResult = false }) {
             tabIndex={0}
             key={project.id}
             className={`${
-              project.isCompleted === true ? 'opacity-30' : ''
+              project.isCompleted === true ? "opacity-30" : ""
             } border-2 border-stone-900 rounded-md p-4 mb-4 cursor-pointer`}
-            onClick={() => selectProject(project.id)}
+            onClick={() => handleSelectProject(project.id)}
             onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                selectProject(project.id);
+              if (e.key === "Enter" || e.key === " ") {
+                handleSelectProject(project.id);
               }
             }}
           >
@@ -29,18 +38,18 @@ export default function ProjectsList({ projects, isSearchResult = false }) {
               <div
                 className={`${
                   project.isCompleted
-                    ? 'bg-stone-700 text-stone-200'
-                    : 'bg-none text-stone-700'
+                    ? "bg-stone-700 text-stone-200"
+                    : "bg-none text-stone-700"
                 } w-min h-min border-2 border-stone-900 py-0 px-2 rounded-md`}
               >
-                {project.isCompleted ? 'completed' : 'current'}
+                {project.isCompleted ? "completed" : "current"}
               </div>
             </div>
             <p
               className="overflow-hidden text-ellipsis whitespace-pre-wrap"
               style={{
-                display: '-webkit-box',
-                WebkitBoxOrient: 'vertical',
+                display: "-webkit-box",
+                WebkitBoxOrient: "vertical",
                 WebkitLineClamp: 5,
               }}
             >
@@ -51,8 +60,8 @@ export default function ProjectsList({ projects, isSearchResult = false }) {
       ) : (
         <p>
           {isSearchResult
-            ? 'No projects found matching your search.'
-            : 'No projects available.'}
+            ? "No projects found matching your search."
+            : "No projects available."}
         </p>
       )}
     </div>

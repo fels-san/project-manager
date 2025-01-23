@@ -35,7 +35,7 @@ const employeesSlice = createSlice({
         if (employee.id === updatedEmployee.id) {
           return {
             ...employee,
-            ...action.payload.updatedEmployee,
+            ...updatedEmployee,
           };
         }
         return employee;

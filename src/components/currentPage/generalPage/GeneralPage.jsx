@@ -1,6 +1,8 @@
-import { React, useState, useContext, useCallback, useRef } from 'react';
+// import { React, useState, useContext, useCallback, useRef } from 'react';
+import { React, useState, useCallback, useRef } from 'react';
+import { useSelector } from 'react-redux';
 
-import { ProjectManagementContext } from '../../../store/project-management-context';
+// import { ProjectManagementContext } from '../../../store/project-management-context';
 
 import ProjectsList from './ProjectsList';
 import EmployeesList from './employeesList/EmployeesList';
@@ -9,8 +11,10 @@ import SearchBar from './SearchBar';
 import Dropdown from './dropdown/Dropdown';
 
 export default function GeneralPage() {
+  const projects = useSelector(state => state.projectManagement.projects);
+
   const [searchText, setSearchText] = useState('');
-  const { projects } = useContext(ProjectManagementContext);
+  // const { projects } = useContext(ProjectManagementContext);
   const [sortType, setSortType] = useState('By Project Status');
   const [isDescending, setIsDescending] = useState(true);
   const [selectedTags, setSelectedTags] = useState([]);

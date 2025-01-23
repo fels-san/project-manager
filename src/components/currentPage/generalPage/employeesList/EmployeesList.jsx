@@ -1,13 +1,14 @@
 import {
   React,
-  useContext,
+  // useContext,
   useRef,
   useEffect,
   useState,
   useCallback,
 } from 'react';
+import { useSelector } from 'react-redux';
 
-import { ProjectManagementContext } from '../../../../store/project-management-context';
+// import { ProjectManagementContext } from '../../../../store/project-management-context';
 
 import ContextMenu from './ContextMenu';
 import EmployeeItem from './EmployeeItem';
@@ -16,7 +17,9 @@ export default function EmployeesList({
   selectedEmployees,
   onEmployeeSelection,
 }) {
-  const { projects, employees } = useContext(ProjectManagementContext);
+  // const { projects, employees } = useContext(ProjectManagementContext);
+  const projects = useSelector(state => state.projectManagement.projects);
+  const employees = useSelector(state => state.projectManagement.employees);
 
   const [contextMenu, setContextMenu] = useState({
     isVisible: false,

@@ -1,8 +1,11 @@
-import { React, useContext, useRef, useState, useEffect } from 'react';
+// import { React, useContext, useRef, useState, useEffect } from 'react';
+import { React, useRef, useState, useEffect } from 'react';
+import { useDispatch } from "react-redux";
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
-import { ProjectManagementContext } from '../../../store/project-management-context';
+// import { ProjectManagementContext } from '../../../store/project-management-context';
+import { projectManagementActions } from "../../../store/projectManagementSlice";
 
 import Check from '../../../assets/check-circle.svg';
 import Save from '../../../assets/check-lg.svg';
@@ -10,12 +13,14 @@ import Pencil from '../../../assets/pencil-square.svg';
 import Delete from '../../../assets/x-square.svg';
 
 export default function Task({ taskContent, projectId }) {
+  const dispatch = useDispatch();
+
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: taskContent.id });
 
-  const { changeTaskStatus, updateTask, deleteTask } = useContext(
-    ProjectManagementContext
-  );
+  // const { changeTaskStatus, updateTask, deleteTask } = useContext(
+  //   ProjectManagementContext
+  // );
 
   const style = {
     transition,
@@ -32,8 +37,17 @@ export default function Task({ taskContent, projectId }) {
 
   function handleSave(event) {
     if (event.key && event.key !== 'Enter') return;
-    updateTask(projectId, { ...taskContent, title: input.current.value });
+    dispatch(projectManagementActions.updateTask(projectId, { ...taskContent, title: input.current.value }));
+    // updateTask(projectId, { ...taskContent, title: input.current.value });
     setIsEditing((editing) => !editing);
+  }
+
+  function handleChangeTaskStatus(taskContentId) {
+    dispatch(projectManagementActions.changeTaskStatus(projectId, taskContentId));
+  }
+
+  function handleDeleteTask(taskContentId) {
+    dispatch(projectManagementActions.deleteTask(projectId, taskContentId));
   }
 
   useEffect(() => {
@@ -45,7 +59,9 @@ export default function Task({ taskContent, projectId }) {
   return (
     <div
       ref={setNodeRef}
+      // eslint-disable-next-line react/jsx-props-no-spreading
       {...attributes}
+      // eslint-disable-next-line react/jsx-props-no-spreading
       {...listeners}
       style={style}
       className="flex flex-row justify-between"
@@ -76,7 +92,7 @@ export default function Task({ taskContent, projectId }) {
           <div className="flex flex-row gap-2">
             <button
               type="button"
-              onClick={() => changeTaskStatus(projectId, taskContent.id)}
+              onClick={() => handleChangeTaskStatus(projectId, taskContent.id)}
               title={taskContent.isCompleted ? 'Incomplete' : 'Complete'}
             >
               <img src={Check} alt="check-circle" />
@@ -87,7 +103,7 @@ export default function Task({ taskContent, projectId }) {
             <button
               type="button"
               title="Delete"
-              onClick={() => deleteTask(projectId, taskContent.id)}
+              onClick={() => handleDeleteTask(projectId, taskContent.id)}
             >
               <img src={Delete} alt="x-square" />
             </button>

@@ -1,15 +1,27 @@
-import { React, useContext } from 'react';
+// import { React, useContext } from 'react';
+import { React } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { ProjectManagementContext } from '../store/project-management-context';
+// import { ProjectManagementContext } from '../store/project-management-context';
+import { projectManagementActions } from '../store/projectManagementSlice';
 
 export default function Navigation() {
-  const {
-    changePage,
-    actionType,
-    selectedProject,
-    selectedEmployee,
-    projects,
-  } = useContext(ProjectManagementContext);
+  const dispatch = useDispatch();
+  const projects = useSelector((state) => state.projectManagement.projects);
+  const actionType = useSelector((state) => state.projectManagement.actionType);
+  const selectedProject = useSelector((state) => state.projectManagement.selectedProject);
+  const selectedEmployee = useSelector((state) => state.projectManagement.selectedEmployee);
+  // const {
+  //   changePage,
+  //   actionType,
+  //   selectedProject,
+  //   selectedEmployee,
+  //   projects,
+  // } = useContext(ProjectManagementContext);
+
+  function handleChangePage(pageName) {
+    dispatch(projectManagementActions.changePage(pageName));
+  }
 
   return (
     <nav className="w-full h-auto px-0 mt-5">
@@ -22,7 +34,7 @@ export default function Navigation() {
                 ? 'bg-stone-50 text-stone-600'
                 : 'bg-stone-100 text-stone-400'
             } px-5 pt-4 pb-2 rounded-t-md font-bold cursor-pointer`}
-            onClick={() => changePage('general')}
+            onClick={() => handleChangePage('general')}
           >
             General{' '}
             <div className="inline bg-stone-200 rounded-full px-1 py-0.5">
@@ -51,7 +63,7 @@ export default function Navigation() {
                   ? 'bg-stone-50 text-stone-600'
                   : 'bg-stone-100 text-stone-400'
               } px-5 pt-4 pb-2 rounded-t-md font-bold cursor-pointer`}
-              onClick={() => changePage('current project')}
+              onClick={() => handleChangePage('current project')}
             >
               Current Project
             </button>
@@ -65,7 +77,7 @@ export default function Navigation() {
                   ? 'bg-stone-50 text-stone-600'
                   : 'bg-stone-100 text-stone-400'
               } px-5 pt-4 pb-2 rounded-t-md font-bold cursor-pointer`}
-              onClick={() => changePage('new project')}
+              onClick={() => handleChangePage('new project')}
             >
               New Project
             </button>

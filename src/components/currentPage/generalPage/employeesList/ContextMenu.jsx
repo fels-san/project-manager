@@ -1,6 +1,9 @@
-import { useContext, React } from 'react';
+// import { useContext, React } from 'react';
+import { React } from 'react';
+import { useDispatch } from 'react-redux';
 
-import { ProjectManagementContext } from '../../../../store/project-management-context';
+// import { ProjectManagementContext } from '../../../../store/project-management-context';
+import { projectManagementActions } from '../../../../store/projectManagementSlice';
 
 export default function ContextMenu({
   employee,
@@ -8,16 +11,24 @@ export default function ContextMenu({
   position,
   isVisible,
 }) {
-  const { selectEmployee, deleteEmployee } = useContext(
-    ProjectManagementContext
-  );
+  // const { selectEmployee, deleteEmployee } = useContext(
+  //   ProjectManagementContext
+  // );
+  const dispatch = useDispatch();
+
+  function handleSelectEmployee() {
+    dispatch(projectManagementActions.selectEmployee(employee.id));
+    // selectEmployee(employee.id);
+  }
   
   function handleDeleteEmployee() {
+    // eslint-disable-next-line no-alert, no-restricted-globals
     const isEmployeeDeleted = confirm(
       'Are you sure you want to delete this employee? This action cannot be undone.'
     );
     if (isEmployeeDeleted) {
-      deleteEmployee(employee.id);
+      dispatch(projectManagementActions.deleteEmployee(employee.id));
+      // deleteEmployee(employee.id);
     }
   }
   
@@ -36,7 +47,7 @@ export default function ContextMenu({
         <li>
           <button
             type="button"
-            onClick={() => selectEmployee(employee.id)}
+            onClick={handleSelectEmployee}
             className="w-full text-left roundd-md px-1 hover:bg-stone-100"
           >
             Profile

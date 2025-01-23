@@ -1,11 +1,24 @@
-import { React, useContext } from 'react';
+// import { React, useContext } from 'react';
+import { React } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
-import { ProjectManagementContext } from '../store/project-management-context';
+// import { ProjectManagementContext } from '../store/project-management-context';
+import { projectManagementActions } from '../store/projectManagementSlice';
 
 export default function Sidebar() {
-  const { projects, createProject, selectProject } = useContext(
-    ProjectManagementContext
-  );
+  const dispatch = useDispatch();
+  const projects = useSelector((state) => state.projectManagement.projects);
+  // const { projects, createProject, selectProject } = useContext(
+  //   ProjectManagementContext
+  // );
+
+  function handleCreateProject() {
+    dispatch(projectManagementActions.createProject());
+  }
+
+  function handleSelectProject(projectId) {
+    dispatch(projectManagementActions.selectProject(projectId));
+  }
 
   const currentProjects = projects.filter(
     (project) => project.isCompleted === false
@@ -21,7 +34,7 @@ export default function Sidebar() {
       </h2>
       <button
         type="button"
-        onClick={createProject}
+        onClick={handleCreateProject}
         className="bg-stone-700 text-stone-400 rounded-md px-4 py-2 my-7"
       >
         + Add Project
@@ -32,7 +45,7 @@ export default function Sidebar() {
       {currentProjects.map((project) => (
         <button
           type="button"
-          onClick={() => selectProject(project.id)}
+          onClick={() => handleSelectProject(project.id)}
           key={project.id}
           className={`${
             project.isSelected
@@ -49,7 +62,7 @@ export default function Sidebar() {
       {completedProjects.map((project) => (
         <button
           type="button"
-          onClick={() => selectProject(project.id)}
+          onClick={() => handleSelectProject(project.id)}
           key={project.id}
           className={`${
             project.isSelected

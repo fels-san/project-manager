@@ -1,24 +1,37 @@
-import { React, useContext } from 'react';
+// import { React, useContext } from 'react';
+import { React } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-import { ProjectManagementContext } from '../../store/project-management-context';
-import ProjectsList from './generalPage/ProjectsList';
+// import { ProjectManagementContext } from '../../store/project-management-context';
+import { projectManagementActions } from '../../store/projectManagementSlice';
+
+import ProjectsList from "./generalPage/ProjectsList";
 
 export default function EmployeeProfile({ employee }) {
-  const { projects, editEmployee, deleteEmployee } = useContext(
-    ProjectManagementContext
-  );
+  const dispatch = useDispatch();
+  const projects = useSelector((state) => state.projectManagement.projects);
+
+  // const { projects, editEmployee, deleteEmployee } = useContext(
+  //   ProjectManagementContext
+  // );
 
   const filteredProjects = projects.filter((project) =>
     project.team.some((teamMember) => teamMember.id === employee.id)
   );
 
   function handleDeleteEmployee() {
+    // eslint-disable-next-line no-restricted-globals, no-alert
     const isEmployeeDeleted = confirm(
-      'Are you sure you want to delete this employee? This action cannot be undone.'
+      "Are you sure you want to delete this employee? This action cannot be undone."
     );
     if (isEmployeeDeleted) {
-      deleteEmployee(employee.id);
+      dispatch(projectManagementActions.deleteEmployee(employee.id));
+      // deleteEmployee(employee.id);
     }
+  }
+
+  function handleEditEmployee() {
+    dispatch(projectManagementActions.editEmployee());
   }
 
   function formatDateAge(birthDate) {
@@ -34,18 +47,18 @@ export default function EmployeeProfile({ employee }) {
     const finalAge = hasBirthdayPassed ? age : age - 1;
 
     const months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
     ];
     const formattedDate = `${birthDate.getDate()} ${
       months[birthDate.getMonth()]
@@ -78,21 +91,21 @@ export default function EmployeeProfile({ employee }) {
               {employee.name}
             </h2>
             <p>
-              <strong>Role:</strong> {employee.position ?? 'N/A'}
+              <strong>Role:</strong> {employee.position ?? "N/A"}
             </p>
             <p>
-              <strong>Birthdate:</strong>{' '}
-              {formatDateAge(employee.birthDate) ?? 'N/A'}
-            </p>{' '}
+              <strong>Birthdate:</strong>{" "}
+              {formatDateAge(employee.birthDate) ?? "N/A"}
+            </p>{" "}
             <p>
-              <strong>Joined the company:</strong>{' '}
-              {employee.companyStartYear?.getFullYear() ?? 'N/A'}
+              <strong>Joined the company:</strong>{" "}
+              {employee.companyStartYear?.getFullYear() ?? "N/A"}
             </p>
           </div>
         </div>
 
         <div className="flex flex-col">
-          <button type="button" onClick={() => editEmployee()}>
+          <button type="button" onClick={() => handleEditEmployee()}>
             Edit
           </button>
           <button type="button" onClick={handleDeleteEmployee}>
@@ -106,10 +119,10 @@ export default function EmployeeProfile({ employee }) {
             Contact info
           </h2>
           <p>
-            <strong>Phone:</strong> {employee.phone ?? 'N/A'}
+            <strong>Phone:</strong> {employee.phone ?? "N/A"}
           </p>
           <p>
-            <strong>Email:</strong> {employee.email ?? 'N/A'}
+            <strong>Email:</strong> {employee.email ?? "N/A"}
           </p>
         </div>
         <div>
