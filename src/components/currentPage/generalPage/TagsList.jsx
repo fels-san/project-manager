@@ -1,9 +1,12 @@
-import { React } from 'react';
-import { useSelector } from 'react-redux';
+import { React } from "react";
+import { useSelector } from "react-redux";
 
 export default function TagsList({ selectedTags, onTagSelection }) {
-    const projects = useSelector(state => state.projects.projects);
-    const tags = useSelector(state => state.tags.tags);
+  const projects = useSelector((state) => state.projects.projects);
+
+  const tags = Array.from(
+    new Set(projects.flatMap((project) => project.tag))
+  );
 
   return (
     <div className="pb-3">
@@ -11,21 +14,21 @@ export default function TagsList({ selectedTags, onTagSelection }) {
         Tags <span className="opacity-55">{tags.length}</span>
       </h2>
       <div className="flex flex-wrap gap-x-2 gap-y-2">
-        {tags.map((tag) => (
-          <div key={tag.name}>
+        {tags.map((tag) => ( 
+          <div key={tag}>
             <button
               type="button"
-              onClick={() => onTagSelection(tag.name)}
+              onClick={() => onTagSelection(tag)}
               className={`${
-                selectedTags.includes(tag.name)
-                  ? 'border-2 bg-stone-600 text-stone-100 px-2'
-                  : 'border-0 text-stone-700 '
+                selectedTags.includes(tag)
+                  ? "border-2 bg-stone-600 text-stone-100 px-2"
+                  : "border-0 text-stone-700 "
               } whitespace-pre-wrap break-normal text-base font-medium border-stone-900 rounded-md px-0 py-0 cursor-pointer transform transition-transform duration-75 hover:scale-105`}
             >
-              {`${tag.name} `}
+              {`${tag} `}
               <span className="opacity-55">
                 {
-                  projects.filter((project) => project.tag.includes(tag.name))
+                  projects.filter((project) => project.tag.includes(tag))
                     .length
                 }
               </span>

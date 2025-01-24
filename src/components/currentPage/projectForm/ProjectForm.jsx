@@ -4,7 +4,6 @@ import { v4 as uuidv4 } from "uuid";
 
 import { projectsActions } from "../../../store/projectsSlice";
 import { employeesActions } from "../../../store/employeesSlice";
-import { tagsActions } from "../../../store/tagsSlice";
 import { uiActions } from "../../../store/uiSlice";
 
 import ListDisplay from "./ListDisplay";
@@ -62,7 +61,6 @@ export default function ProjectForm({ project = null }) {
 
     if (project) {
       dispatch(employeesActions.addEmployees(correctedTeam));
-      dispatch(tagsActions.addTags(tags));
       dispatch(
         projectsActions.updateProject({
           id: project.id,
@@ -81,7 +79,6 @@ export default function ProjectForm({ project = null }) {
       dispatch(uiActions.setActionType("editing"));
     } else {
       dispatch(employeesActions.addEmployees(correctedTeam));
-      dispatch(tagsActions.addTags(tags));
       dispatch(
         projectsActions.addProject({
           id: uuidv4(),
