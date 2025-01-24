@@ -161,7 +161,7 @@ export default function ProjectForm({ project = null }) {
       <div className="flex flex-row justify-end gap-3 mb-2 mt-2">
         <button
           type="button"
-          onClick={project ? handleCancelProject : handleCancelEditing}
+          onClick={project ? handleCancelEditing : handleCancelProject}
         >
           Cancel
         </button>
