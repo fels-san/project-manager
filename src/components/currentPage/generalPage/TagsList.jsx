@@ -1,13 +1,9 @@
-// import { React, useContext } from 'react';
 import { React } from 'react';
 import { useSelector } from 'react-redux';
 
-// import { ProjectManagementContext } from '../../../store/project-management-context';
-
 export default function TagsList({ selectedTags, onTagSelection }) {
-  // const { projects, tags } = useContext(ProjectManagementContext);
-    const projects = useSelector(state => state.projectManagement.projects);
-    const tags = useSelector(state => state.projectManagement.tags);
+    const projects = useSelector(state => state.projects.projects);
+    const tags = useSelector(state => state.tags.tags);
 
   return (
     <div className="pb-3">

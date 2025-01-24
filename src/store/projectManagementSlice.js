@@ -11,13 +11,10 @@ import { arrayMove } from "@dnd-kit/sortable";
 const projectManagementSlice = createSlice({
   name: "projectManagement",
   initialState: {
-    // projects: storedProjects,
     projects: [],
     actionType: "none",
-    // projectCounter: storedCounter,
-    // employees: storedEmployees,
-    selectedProject: null,
-    selectedEmployee: null,
+    selectedProjectId: null,
+    selectedEmployeeId: null,
     projectCounter: 0,
     employees: [],
     tags: [
@@ -41,47 +38,27 @@ const projectManagementSlice = createSlice({
     },
 
     addProject: (state, action) => {
-      const updatedCounter = state.projectCounter + 1;
-      const newProject = {
-        ...action.payload,
-        id: state.projectCounter,
-        dueDate: new Date(action.payload.dueDate),
-        startDate: new Date(action.payload.startDate),
-      };
+      const newProject = action.payload;
 
       const existingTags = state.tags.map((tag) => tag.name);
       const updatedTags = newProject.tag
         .filter((tag) => !existingTags.includes(tag))
         .map((tag) => ({ name: tag }));
 
-      const existingEmployeesNames = state.employees.map(
-        (employee) => employee.name
-      );
-
       newProject.team = newProject.team.map((employee) => {
-        const clone = state.employees.find((e) => e.name === employee.name);
-        if (clone) {
-          return clone;
+        const matchingEmployee = state.employees.find(
+          (e) => e.name === employee.name
+        );
+        if (matchingEmployee) {
+          return { ...matchingEmployee };
         }
+        state.employees = [...state.employees, employee];
         return employee;
       });
 
-      const newEmployees = newProject.team.filter(
-        (employee) => !existingEmployeesNames.includes(employee.name)
-      );
+      state.projects = [...state.projects, newProject];
 
-      const updatedEmployees = [...state.employees, ...newEmployees];
-
-      const updatedProjects = [...state.projects, newProject];
-
-      // localStorageHelper.addProject(newProject);
-      // localStorageHelper.setCounter(updatedCounter);
-      // localStorageHelper.addEmployees(newEmployees);
-
-      state.projects = updatedProjects;
-      state.projectCounter = updatedCounter;
       state.tags = [...state.tags, ...updatedTags];
-      state.employees = updatedEmployees;
       state.actionType = "none";
     },
 
@@ -90,59 +67,43 @@ const projectManagementSlice = createSlice({
     },
 
     deleteProject: (state, action) => {
-      const updatedProjects = state.projects.filter(
-        (project) => project.id !== action.payload
-      );
+      const deletedProjectId = action.payload;
 
-      // localStorageHelper.deleteProject(action.payload);
-      state.projects = updatedProjects;
+      state.projects = state.projects.filter(
+        (project) => project.id !== deletedProjectId
+      );
       state.actionType = "none";
     },
 
     updateProject: (state, action) => {
-      const updatedProject = {
-        ...action.payload.project,
-        ...action.payload.updatedProject,
-        dueDate: new Date(action.payload.updatedProject.dueDate),
-        startDate: new Date(action.payload.updatedProject.startDate),
-      };
-
-      const existingEmployeesNames = state.employees.map(
-        (employee) => employee.name
-      );
-
-      updatedProject.team = updatedProject.team.map((employee) => {
-        const clone = state.employees.find((e) => e.name === employee.name);
-        if (clone) {
-          return clone;
-        }
-        return employee;
-      });
-
-      const newEmployees = updatedProject.team.filter(
-        (employee) => !existingEmployeesNames.includes(employee.name)
-      );
-
-      const updatedEmployees = [...state.employees, ...newEmployees];
+      const updatedProject = action.payload;
 
       const existingTags = state.tags.map((tag) => tag.name);
       const updatedTags = [
         ...new Set([
           ...state.tags,
-          ...updatedProject.tag.filter((tag) => !existingTags.includes(tag)),
+          ...updatedProject.tag
+            .filter((tag) => !existingTags.includes(tag))
+            .map((tag) => ({ name: tag })),
         ]),
       ];
 
-      const updatedProjects = state.projects.map((project) =>
+      updatedProject.team = updatedProject.team.map((employee) => {
+        const matchingEmployee = state.employees.find(
+          (e) => e.name === employee.name
+        );
+        if (matchingEmployee) {
+          return { ...matchingEmployee };
+        }
+        state.employees = [...state.employees, employee];
+        return employee;
+      });
+
+      state.projects = state.projects.map((project) =>
         project.id === updatedProject.id ? updatedProject : project
       );
 
-      // localStorageHelper.updateProject(updatedProject);
-      // localStorageHelper.addEmployees(newEmployees);
-
-      state.projects = updatedProjects;
       state.tags = updatedTags;
-      state.employees = updatedEmployees;
       state.actionType = "editing";
     },
 
@@ -151,21 +112,16 @@ const projectManagementSlice = createSlice({
     },
 
     changeProjectStatus: (state, action) => {
-      const updatedProjects = state.projects.map((project) =>
-        project.id === action.payload
+      const projectId = action.payload;
+
+      state.projects = state.projects.map((project) =>
+        project.id === projectId
           ? {
               ...project,
               isCompleted: !project.isCompleted,
             }
           : project
       );
-
-      // const updatedProject = updatedProjects.find(
-      //   (project) => project.id === action.payload
-      // );
-      // localStorageHelper.updateProject(updatedProject);
-
-      state.projects = updatedProjects;
       state.actionType = "editing";
     },
 
@@ -178,55 +134,51 @@ const projectManagementSlice = createSlice({
     },
 
     deleteEmployee: (state, action) => {
-      const updatedEmployees = state.employees.filter(
-        (employee) => employee.id !== action.payload
+      const deletedEmployeeId = action.payload;
+
+      state.employees = state.employees.filter(
+        (employee) => employee.id !== deletedEmployeeId
       );
 
-      const updatedProjects = state.projects.map((project) => ({
+      state.projects = state.projects.map((project) => ({
         ...project,
-        team: project.team.filter((employee) => employee.id !== action.payload),
+        team: project.team.filter(
+          (employee) => employee.id !== deletedEmployeeId
+        ),
       }));
 
-      // localStorageHelper.saveProjects(updatedProjects);
-      // localStorageHelper.deleteEmployee(action.payload);
-
-      state.projects = updatedProjects;
-      state.employees = updatedEmployees;
       state.actionType = "none";
     },
 
     updateEmployee: (state, action) => {
-      const updatedEmployees = state.employees.map((employee) => {
-        if (employee.id === action.payload.updatedEmployee.id) {
+      const updatedEmployee = action.payload;
+
+      state.employees = state.employees.map((employee) => {
+        if (employee.id === updatedEmployee.id) {
           return {
             ...employee,
-            ...action.payload.updatedEmployee,
+            ...updatedEmployee,
           };
         }
         return employee;
       });
 
-      // const updatedEmployee = updatedEmployees.find(
-      //   (employee) => employee.id === action.payload.updatedEmployee.id
-      // );
-
-      // localStorageHelper.updateEmployee(updatedEmployee);
-
-      state.employees = updatedEmployees;
       state.actionType = "viewingProfile";
     },
 
     addTask: (state, action) => {
-      const updatedCounter = action.payload.taskId + 1;
+      const { taskId, projectId, taskTitle } = action.payload;
+
+      const updatedCounter = taskId + 1;
 
       const newTask = {
-        title: action.payload.taskTitle,
+        title: taskTitle,
         isCompleted: false,
         id: updatedCounter,
       };
 
-      const updatedProjects = state.projects.map((project) =>
-        project.id === action.payload.projectId
+      state.projects = state.projects.map((project) =>
+        project.id === projectId
           ? {
               ...project,
               taskCounter: updatedCounter,
@@ -234,130 +186,103 @@ const projectManagementSlice = createSlice({
             }
           : project
       );
-
-      // localStorageHelper.addTaskToProject(action.payload.projectId, newTask);
-
-      state.projects = updatedProjects;
     },
 
     updateTask: (state, action) => {
-      const updatedProjects = state.projects.map((project) => {
-        if (project.id !== action.payload.projectId) return project;
+      const { projectId, updatedTask } = action.payload;
+
+      state.projects = state.projects.map((project) => {
+        if (project.id !== projectId) return project;
         return {
           ...project,
           tasks: project.tasks.map((task) =>
-            task.id === action.payload.task.id
-              ? { ...task, ...action.payload.task }
-              : task
+            task.id === updatedTask.id ? { ...task, ...updatedTask } : task
           ),
         };
       });
 
-      // const updatedProject = updatedProjects.find(
-      //   (project) => project.id === action.payload.projectId
-      // );
-      // localStorageHelper.updateProject(updatedProject);
-
-      state.projects = updatedProjects;
       state.actionType = "editing";
     },
 
     deleteTask: (state, action) => {
-      const updatedProjects = state.projects.map((project) =>
-        project.id === action.payload.projectId
+      const { projectId, taskId } = action.payload;
+
+      state.projects = state.projects.map((project) =>
+        project.id === projectId
           ? {
               ...project,
-              tasks: project.tasks.filter(
-                (task) => task.id !== action.payload.taskId
-              ),
+              tasks: project.tasks.filter((task) => task.id !== taskId),
             }
           : project
       );
-
-      // localStorageHelper.removeTask(
-      //   action.payload.projectId,
-      //   action.payload.taskId
-      // );
-
-      state.projects = updatedProjects;
     },
 
     updateTaskOrder: (state, action) => {
-      const updatedProjects = state.projects.map((project) =>
-        project.id === action.payload.projectId
+      const { projectId, originalPos, newPos } = action.payload;
+
+      state.projects = state.projects.map((project) =>
+        project.id === projectId
           ? {
               ...project,
-              tasks: arrayMove(
-                project.tasks,
-                action.payload.originalPos,
-                action.payload.newPos
-              ),
+              tasks: arrayMove(project.tasks, originalPos, newPos),
             }
           : project
       );
-
-      // const updatedProject = updatedProjects.find(
-      //   (project) => project.id === action.payload.projectId
-      // );
-      // localStorageHelper.updateProject(updatedProject);
-
-      state.projects = updatedProjects;
     },
 
     changeTaskStatus: (state, action) => {
-      const updatedProjects = state.projects.map((project) => {
-        if (project.id !== action.payload.projectId) return project;
+      const { projectId, taskId } = action.payload;
+
+      state.projects = state.projects.map((project) => {
+        if (project.id !== projectId) return project;
         return {
           ...project,
           tasks: project.tasks.map((task) =>
-            task.id === action.payload.taskId
+            task.id === taskId
               ? { ...task, isCompleted: !task.isCompleted }
               : task
           ),
         };
       });
 
-      // const updatedProject = updatedProjects.find(
-      //   (project) => project.id === action.payload.projectId
-      // );
-      // localStorageHelper.updateProject(updatedProject);
-
-      state.projects = updatedProjects;
       state.actionType = "editing";
     },
 
     selectProject: (state, action) => {
+      const selectedId = action.payload;
+
       const updatedProjects = state.projects.map((project) => ({
         ...project,
-        isSelected: project.id === action.payload,
+        isSelected: project.id === selectedId,
       }));
 
-      state.selectedProject = updatedProjects.find(
-        (item) => item.isSelected === true
-      );
-
+      state.selectedProjectId = selectedId;
       state.projects = updatedProjects;
       state.actionType = "editing";
     },
 
     selectEmployee: (state, action) => {
-      const updatedEmployees = state.employees.map((employee) => ({
+      const selectedId = action.payload;
+
+      state.employees = state.employees.map((employee) => ({
         ...employee,
-        isSelected: employee.id === action.payload,
+        isSelected: employee.id === selectedId,
       }));
 
-      state.employees = updatedEmployees;
+      state.selectedEmployeeId = selectedId;
       state.actionType = "viewingProfile";
     },
 
     changePage: (state, action) => {
-      if (action.payload === "general") {
+      const pageName = action.payload;
+
+      if (pageName === "general") {
         state.actionType = "none";
       }
-      if (action.payload === "current project") {
+      if (pageName === "current project") {
         state.actionType = "editing";
       }
-      if (action.payload === "new project") {
+      if (pageName === "new project") {
         state.actionType = "creating";
       }
     },

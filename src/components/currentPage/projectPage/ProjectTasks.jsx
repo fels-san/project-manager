@@ -1,5 +1,4 @@
-// import { React, useContext, useState } from 'react';
-import { React, useState } from 'react';
+import { React, useState } from "react";
 import { useDispatch } from "react-redux";
 import {
   closestCorners,
@@ -7,19 +6,17 @@ import {
   useSensor,
   useSensors,
   MouseSensor,
-} from '@dnd-kit/core';
+} from "@dnd-kit/core";
 import {
   SortableContext,
   verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
+} from "@dnd-kit/sortable";
 
-// import { ProjectManagementContext } from '../../../store/project-management-context';
-import { projectManagementActions } from "../../../store/projectManagementSlice";
+import { projectsActions } from "../../../store/projectsSlice";
 
-import Task from './Task';
+import Task from "./Task";
 
 export default function ProjectTasks({ project }) {
-  // const { addTask, updateTaskOrder } = useContext(ProjectManagementContext);
   const dispatch = useDispatch();
 
   const sensors = useSensors(
@@ -28,15 +25,21 @@ export default function ProjectTasks({ project }) {
     })
   );
 
-  const [taskTitle, setTaskTitle] = useState('');
+  const [taskTitle, setTaskTitle] = useState("");
 
   function handleAddTask(event) {
-    if (event.key && event.key !== 'Enter') return;
+    if (event.key && event.key !== "Enter") return;
 
     const title = taskTitle.trim();
     if (title) {
-      dispatch(projectManagementActions.addTask(project.id, title, project.taskCounter));
-      setTaskTitle('');
+      dispatch(
+        projectsActions.addTask({
+          projectId: project.id,
+          taskTitle: title,
+          taskId: project.taskCounter,
+        })
+      );
+      setTaskTitle("");
     }
   }
 
@@ -50,8 +53,9 @@ export default function ProjectTasks({ project }) {
     const originalPos = getTaskPos(active.id);
     const newPos = getTaskPos(over.id);
 
-    // updateTaskOrder(project.id, originalPos, newPos);
-    dispatch(projectManagementActions.updateTaskOrder(project.id, originalPos, newPos));
+    dispatch(
+      projectsActions.updateTaskOrder({projectId: project.id, originalPos, newPos})
+    );
   };
 
   return (

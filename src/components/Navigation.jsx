@@ -1,26 +1,26 @@
-// import { React, useContext } from 'react';
-import { React } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { React } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-// import { ProjectManagementContext } from '../store/project-management-context';
-import { projectManagementActions } from '../store/projectManagementSlice';
+import { uiActions } from "../store/uiSlice";
 
 export default function Navigation() {
   const dispatch = useDispatch();
-  const projects = useSelector((state) => state.projectManagement.projects);
-  const actionType = useSelector((state) => state.projectManagement.actionType);
-  const selectedProject = useSelector((state) => state.projectManagement.selectedProject);
-  const selectedEmployee = useSelector((state) => state.projectManagement.selectedEmployee);
-  // const {
-  //   changePage,
-  //   actionType,
-  //   selectedProject,
-  //   selectedEmployee,
-  //   projects,
-  // } = useContext(ProjectManagementContext);
+  const projects = useSelector((state) => state.projects.projects);
+  const employees = useSelector((state) => state.employees.employees);
+  const actionType = useSelector((state) => state.ui.actionType);
+  const selectedProjectId = useSelector((state) => state.ui.selectedProjectId);
+  const selectedEmployeeId = useSelector(
+    (state) => state.ui.selectedEmployeeId
+  );
+  const selectedProject = projects.find(
+    (project) => project.id === selectedProjectId
+  );
+  const selectedEmployee = employees.find(
+    (employee) => employee.id === selectedEmployeeId
+  );
 
   function handleChangePage(pageName) {
-    dispatch(projectManagementActions.changePage(pageName));
+    dispatch(uiActions.setPage(pageName));
   }
 
   return (
@@ -30,13 +30,13 @@ export default function Navigation() {
           <button
             type="button"
             className={`${
-              actionType === 'none'
-                ? 'bg-stone-50 text-stone-600'
-                : 'bg-stone-100 text-stone-400'
+              actionType === "none"
+                ? "bg-stone-50 text-stone-600"
+                : "bg-stone-100 text-stone-400"
             } px-5 pt-4 pb-2 rounded-t-md font-bold cursor-pointer`}
-            onClick={() => handleChangePage('general')}
+            onClick={() => handleChangePage("general")}
           >
-            General{' '}
+            General{" "}
             <div className="inline bg-stone-200 rounded-full px-1 py-0.5">
               {projects.length}
             </div>
@@ -46,9 +46,9 @@ export default function Navigation() {
           <button
             type="button"
             className={`${
-              actionType === 'statitic'
-                ? 'bg-stone-50 text-stone-600'
-                : 'bg-stone-100 text-stone-400'
+              actionType === "statitic"
+                ? "bg-stone-50 text-stone-600"
+                : "bg-stone-100 text-stone-400"
             } px-5 pt-4 pb-2 rounded-t-md font-bold cursor-pointer`}
           >
             Statitic
@@ -59,11 +59,11 @@ export default function Navigation() {
             <button
               type="button"
               className={`${
-                actionType === 'editing'
-                  ? 'bg-stone-50 text-stone-600'
-                  : 'bg-stone-100 text-stone-400'
+                actionType === "editing"
+                  ? "bg-stone-50 text-stone-600"
+                  : "bg-stone-100 text-stone-400"
               } px-5 pt-4 pb-2 rounded-t-md font-bold cursor-pointer`}
-              onClick={() => handleChangePage('current project')}
+              onClick={() => handleChangePage("current project")}
             >
               Current Project
             </button>
@@ -73,24 +73,24 @@ export default function Navigation() {
             <button
               type="button"
               className={`${
-                actionType === 'creating'
-                  ? 'bg-stone-50 text-stone-600'
-                  : 'bg-stone-100 text-stone-400'
+                actionType === "creating"
+                  ? "bg-stone-50 text-stone-600"
+                  : "bg-stone-100 text-stone-400"
               } px-5 pt-4 pb-2 rounded-t-md font-bold cursor-pointer`}
-              onClick={() => handleChangePage('new project')}
+              onClick={() => handleChangePage("new project")}
             >
               New Project
             </button>
           </li>
         )}
-        {actionType === 'viewingProfile' && selectedEmployee && (
+        {actionType === "viewingProfile" && selectedEmployee && (
           <li>
             <button
               type="button"
               className={`${
-                actionType === 'viewingProfile'
-                  ? 'bg-stone-50 text-stone-600'
-                  : 'bg-stone-100 text-stone-400'
+                actionType === "viewingProfile"
+                  ? "bg-stone-50 text-stone-600"
+                  : "bg-stone-100 text-stone-400"
               } px-5 pt-4 pb-2 rounded-t-md font-bold cursor-pointer`}
             >
               {selectedEmployee.name}

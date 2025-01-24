@@ -1,15 +1,13 @@
-// import { React, useContext } from "react";
 import { React } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-// import { ProjectManagementContext } from '../../../store/project-management-context';
-import { projectManagementActions } from "../../../store/projectManagementSlice";
+import { projectsActions } from "../../../store/projectsSlice";
+import { uiActions } from "../../../store/uiSlice";
 
 import ProjectTasks from "./ProjectTasks";
 import Dropdown from "../generalPage/dropdown/Dropdown";
 
 export default function Project({ project }) {
-  console.log(project);
   function formatDate(date) {
     const options = {
       year: "numeric",
@@ -20,24 +18,28 @@ export default function Project({ project }) {
   }
 
   const dispatch = useDispatch();
-
-  // const { changeProjectStatus, editProject, deleteProject, selectEmployee } =
-  //   useContext(ProjectManagementContext);
+  const employees = useSelector((state) => state.employees.employees);
 
   function handleChangeProjectStatus(projectId) {
-    dispatch(projectManagementActions.changeProjectStatus(projectId));
+    dispatch(projectsActions.changeProjectStatus(projectId));
+    dispatch(uiActions.setActionType("editing"));
   }
 
   function handleEditProject() {
-    dispatch(projectManagementActions.editProject());
+    dispatch(uiActions.setActionType("editProject"));
   }
 
   function handleDeleteProject(projectId) {
-    dispatch(projectManagementActions.deleteProject(projectId));
+    dispatch(projectsActions.deleteProject(projectId));
+    dispatch(uiActions.setActionType("none"));
   }
 
-  function handleSelectEmployee(employeeId) {
-    dispatch(projectManagementActions.selectEmployee(employeeId));
+  function handleSelectEmployee(employeeName) {
+    const employeeId = employees.find(
+      (employee) => employee.name === employeeName
+    ).id;
+    dispatch(uiActions.setSelectedEmployee(employeeId));
+    dispatch(uiActions.setActionType("viewingProfile"));
   }
 
   return (
@@ -72,7 +74,8 @@ export default function Project({ project }) {
       </header>
 
       <p className="text-stone-400 mb-3 italic">
-        {formatDate(project.startDate)} - {formatDate(project.dueDate)}
+        {formatDate(new Date(project.startDate))} -{" "}
+        {formatDate(new Date(project.dueDate))}
       </p>
       <p className="whitespace-pre-wrap">{project.description}</p>
       <p className="text-stone-400 mb-0 mt-4">
@@ -83,11 +86,11 @@ export default function Project({ project }) {
         {project.team.map((employee, index) => (
           <button
             type="button"
-            key={employee.id}
-            onClick={() => handleSelectEmployee(employee.id)}
+            key={employee.name}
+            onClick={() => handleSelectEmployee(employee)}
             style={{ cursor: "pointer" }}
           >
-            {employee.name}
+            {employee}
             {index < project.team.length - 1 ? "; " : "."}
           </button>
         ))}

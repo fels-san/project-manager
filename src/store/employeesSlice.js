@@ -21,10 +21,10 @@ const employeesSlice = createSlice({
     },
 
     deleteEmployee(state, action) {
-      const removedEmployeeId = action.payload;
+      const deletedEmployeeId = action.payload;
 
       state.employees = state.employees.filter(
-        (employee) => employee.id !== removedEmployeeId
+        (employee) => employee.id !== deletedEmployeeId
       );
     },
 

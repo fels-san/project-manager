@@ -12,26 +12,22 @@ const projectsSlice = createSlice({
   initialState: { projects: storedProjects, projectCounter: storedCounter },
   reducers: {
     addProject(state, action) {
-      state.projectCounter += 1;
-      const newProject = { ...action.payload, id: state.projectCounter };
+      const newProject = action.payload;
 
       state.projects = [...state.projects, newProject];
     },
 
     // editProject() {},
     deleteProject(state, action) {
-      const removedProjectId = action.payload;
+      const deletedProjectId = action.payload;
 
       state.projects = state.projects.filter(
-        (project) => project.id !== removedProjectId
+        (project) => project.id !== deletedProjectId
       );
     },
 
     updateProject(state, action) {
-      const updatedProject = {
-        ...action.payload.project,
-        ...action.payload.updatedProject,
-      };
+      const updatedProject = action.payload;
 
       state.projects = state.projects.map((project) =>
         project.id === updatedProject.id ? updatedProject : project
@@ -133,11 +129,11 @@ const projectsSlice = createSlice({
     },
 
     deleteEmployeeFromProjects(state, action) {
-      const employeeId = action.payload;
+      const deletedEmployeeName = action.payload;
 
       state.projects = state.projects.map((project) => ({
         ...project,
-        team: project.team.filter((id) => id !== employeeId),
+        team: project.team.filter((employee) => employee !== deletedEmployeeName),
       }));
     },
 

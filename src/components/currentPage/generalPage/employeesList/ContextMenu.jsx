@@ -1,9 +1,9 @@
-// import { useContext, React } from 'react';
 import { React } from 'react';
 import { useDispatch } from 'react-redux';
 
-// import { ProjectManagementContext } from '../../../../store/project-management-context';
-import { projectManagementActions } from '../../../../store/projectManagementSlice';
+import { uiActions } from '../../../../store/uiSlice';
+import { projectsActions } from '../../../../store/projectsSlice';
+import { employeesActions } from '../../../../store/employeesSlice';
 
 export default function ContextMenu({
   employee,
@@ -11,24 +11,22 @@ export default function ContextMenu({
   position,
   isVisible,
 }) {
-  // const { selectEmployee, deleteEmployee } = useContext(
-  //   ProjectManagementContext
-  // );
   const dispatch = useDispatch();
 
   function handleSelectEmployee() {
-    dispatch(projectManagementActions.selectEmployee(employee.id));
-    // selectEmployee(employee.id);
+    dispatch(uiActions.setSelectedEmployee(employee.id));
+    dispatch(uiActions.setActionType("viewingProfile"));
   }
   
   function handleDeleteEmployee() {
-    // eslint-disable-next-line no-alert, no-restricted-globals
+    // eslint-disable-next-line no-restricted-globals, no-alert
     const isEmployeeDeleted = confirm(
       'Are you sure you want to delete this employee? This action cannot be undone.'
     );
     if (isEmployeeDeleted) {
-      dispatch(projectManagementActions.deleteEmployee(employee.id));
-      // deleteEmployee(employee.id);
+      dispatch(employeesActions.deleteEmployee(employee.id));
+      dispatch(projectsActions.deleteEmployeeFromProjects(employee.name));
+      dispatch(uiActions.setActionType("none"));
     }
   }
   

@@ -1,23 +1,21 @@
-// import { React, useContext } from 'react';
 import { React } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-// import { ProjectManagementContext } from '../store/project-management-context';
-import { projectManagementActions } from '../store/projectManagementSlice';
+import { projectsActions } from '../store/projectsSlice';
+import uiSlice, { uiActions } from '../store/uiSlice';
 
 export default function Sidebar() {
   const dispatch = useDispatch();
-  const projects = useSelector((state) => state.projectManagement.projects);
-  // const { projects, createProject, selectProject } = useContext(
-  //   ProjectManagementContext
-  // );
+  const projects = useSelector((state) => state.projects.projects);
 
   function handleCreateProject() {
-    dispatch(projectManagementActions.createProject());
+    dispatch(projectsActions.clearSelection());
+    dispatch(uiActions.setActionType("creating"));
   }
 
   function handleSelectProject(projectId) {
-    dispatch(projectManagementActions.selectProject(projectId));
+    dispatch(uiSlice.setSelectedProject(projectId));
+    dispatch(uiActions.setActionType("editing"));
   }
 
   const currentProjects = projects.filter(

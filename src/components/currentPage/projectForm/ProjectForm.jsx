@@ -1,10 +1,11 @@
-// import { React, useState, useContext, useCallback } from 'react';
 import { React, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 
-// import { ProjectManagementContext } from '../../../store/project-management-context';
-import { projectManagementActions } from "../../../store/projectManagementSlice";
+import { projectsActions } from "../../../store/projectsSlice";
+import { employeesActions } from "../../../store/employeesSlice";
+import { tagsActions } from "../../../store/tagsSlice";
+import { uiActions } from "../../../store/uiSlice";
 
 import ListDisplay from "./ListDisplay";
 import InputField from "./InputField";
@@ -19,10 +20,8 @@ function formatDate(date) {
 }
 
 export default function ProjectForm({ project = null }) {
-  // const { employees, cancelProject, cancelEditing, addProject, updateProject } =
-  //   useContext(ProjectManagementContext);
   const dispatch = useDispatch();
-  const employees = useSelector((state) => state.projectManagement.employees);
+  const employees = useSelector((state) => state.employees.employees);
 
   const [tags, setTags] = useState(project ? project.tag : []);
   const [team, setTeam] = useState(project ? project.team : []);
@@ -62,28 +61,35 @@ export default function ProjectForm({ project = null }) {
     });
 
     if (project) {
+      dispatch(employeesActions.addEmployees(correctedTeam));
+      dispatch(tagsActions.addTags(tags));
       dispatch(
-        projectManagementActions.updateProject(project, {
+        projectsActions.updateProject({
+          id: project.id,
           title: formData.title,
           description: formData.description,
-          // dueDate: new Date(formData.dueDate),
-          // startDate: new Date(formData.startDate),
           dueDate: formData.dueDate.toString(),
           startDate: formData.startDate.toString(),
-          team: correctedTeam,
+          team,
           tag: tags,
+          isCompleted: project.isCompleted,
+          isSelected: project.isSelected,
+          taskCounter: project.taskCounter,
+          tasks: project.tasks,
         })
       );
+      dispatch(uiActions.setActionType("editing"));
     } else {
+      dispatch(employeesActions.addEmployees(correctedTeam));
+      dispatch(tagsActions.addTags(tags));
       dispatch(
-        projectManagementActions.addProject({
+        projectsActions.addProject({
+          id: uuidv4(),
           title: formData.title,
           description: formData.description,
-          // dueDate: new Date(formData.dueDate),
-          // startDate: new Date(formData.startDate),
           dueDate: formData.dueDate.toString(),
           startDate: formData.startDate.toString(),
-          team: correctedTeam,
+          team,
           tag: tags,
           isCompleted: false,
           isSelected: false,
@@ -91,15 +97,18 @@ export default function ProjectForm({ project = null }) {
           tasks: [],
         })
       );
+      dispatch(uiActions.setActionType("none"));
     }
   }
 
   function handleCancelProject() {
-    dispatch(projectManagementActions.cancelProject());
+    // dispatch(projectManagementActions.cancelProject());
+    dispatch(uiActions.setActionType("none"));
   }
 
   function handleCancelEditing() {
-    dispatch(projectManagementActions.cancelEditing());
+    // dispatch(projectManagementActions.cancelEditing());
+    dispatch(uiActions.setActionType("editing"));
   }
 
   const handleAddTeamMember = useCallback((newMember) => {

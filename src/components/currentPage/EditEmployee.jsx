@@ -1,15 +1,13 @@
-// import { React, useState, useContext } from 'react';
-import { React, useState } from 'react';
+import { React, useState } from "react";
 import { useDispatch } from "react-redux";
 
-// import { ProjectManagementContext } from '../../store/project-management-context';
-import { projectManagementActions } from '../../store/projectManagementSlice';
+import { uiActions } from "../../store/uiSlice";
+import { employeesActions } from "../../store/employeesSlice";
 
-import InputField from './projectForm/InputField';
+import InputField from "./projectForm/InputField";
 
 export default function EditEmployee({ employee }) {
   const dispatch = useDispatch();
-  // const { updateEmployee } = useContext(ProjectManagementContext);
 
   const [formData, setFormData] = useState({
     id: employee.id,
@@ -23,7 +21,7 @@ export default function EditEmployee({ employee }) {
 
   const handleChange = (field, value) => {
     const updatedValue =
-      (field === 'birthDate' || field === 'companyStartYear') && value
+      (field === "birthDate" || field === "companyStartYear") && value
         ? new Date(value)
         : value;
 
@@ -33,11 +31,11 @@ export default function EditEmployee({ employee }) {
   const handleSave = () => {
     if (!formData.name) {
       // eslint-disable-next-line no-alert
-      alert('Name are required');
+      alert("Name are required");
       return;
     }
-    dispatch(projectManagementActions.updateEmployee(formData));
-    // updateEmployee(formData);
+    dispatch(employeesActions.updateEmployee(formData));
+    dispatch(uiActions.setActionType("viewingProfile"));
   };
 
   return (
@@ -45,36 +43,36 @@ export default function EditEmployee({ employee }) {
       <InputField
         label="Name"
         defaultValue={formData.name}
-        onChange={(e) => handleChange('name', e.target.value)}
+        onChange={(e) => handleChange("name", e.target.value)}
       />
       <InputField
         label="Role"
         defaultValue={formData.position}
-        onChange={(e) => handleChange('position', e.target.value)}
+        onChange={(e) => handleChange("position", e.target.value)}
       />
       <InputField
         label="Birthdate"
         type="date"
         defaultValue={formData.birthDate}
-        onChange={(e) => handleChange('birthDate', e.target.value)}
+        onChange={(e) => handleChange("birthDate", e.target.value)}
       />
       <InputField
         label="Joined the company"
         type="date"
         defaultValue={formData.companyStartYear}
-        onChange={(e) => handleChange('companyStartYear', e.target.value)}
+        onChange={(e) => handleChange("companyStartYear", e.target.value)}
       />
       <InputField
         label="Phone"
         type="tel"
         defaultValue={formData.phone}
-        onChange={(e) => handleChange('phone', e.target.value)}
+        onChange={(e) => handleChange("phone", e.target.value)}
       />
       <InputField
         label="Email"
         type="email"
         defaultValue={formData.email}
-        onChange={(e) => handleChange('email', e.target.value)}
+        onChange={(e) => handleChange("email", e.target.value)}
       />
       <div className="flex flex-row justify-end gap-3 mt-4">
         <button type="button">Cancel</button>

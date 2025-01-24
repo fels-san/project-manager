@@ -1,19 +1,15 @@
-// import { React, useContext } from 'react';
 import { React } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-// import { ProjectManagementContext } from '../../store/project-management-context';
-import { projectManagementActions } from '../../store/projectManagementSlice';
+import { uiActions } from "../../store/uiSlice";
+import { employeesActions } from "../../store/employeesSlice";
+import { projectsActions } from "../../store/projectsSlice";
 
 import ProjectsList from "./generalPage/ProjectsList";
 
 export default function EmployeeProfile({ employee }) {
   const dispatch = useDispatch();
-  const projects = useSelector((state) => state.projectManagement.projects);
-
-  // const { projects, editEmployee, deleteEmployee } = useContext(
-  //   ProjectManagementContext
-  // );
+  const projects = useSelector((state) => state.projects.projects);
 
   const filteredProjects = projects.filter((project) =>
     project.team.some((teamMember) => teamMember.id === employee.id)
@@ -25,17 +21,18 @@ export default function EmployeeProfile({ employee }) {
       "Are you sure you want to delete this employee? This action cannot be undone."
     );
     if (isEmployeeDeleted) {
-      dispatch(projectManagementActions.deleteEmployee(employee.id));
-      // deleteEmployee(employee.id);
+      dispatch(employeesActions.deleteEmployee(employee.id));
+      dispatch(projectsActions.deleteEmployeeFromProjects(employee.name));
+      dispatch(uiActions.setActionType("none"));
     }
   }
 
   function handleEditEmployee() {
-    dispatch(projectManagementActions.editEmployee());
+    dispatch(uiActions.setActionType("editingProfile"));
   }
 
   function formatDateAge(birthDate) {
-    if (!birthDate) return {};
+    if (!birthDate) return null;
 
     const now = new Date();
 

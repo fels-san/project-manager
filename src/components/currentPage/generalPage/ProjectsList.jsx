@@ -1,16 +1,14 @@
-// import { React, useContext } from 'react';
 import { React } from "react";
 import { useDispatch } from "react-redux";
 
-// import { ProjectManagementContext } from '../../../store/project-management-context';
-import { projectManagementActions } from "../../../store/projectManagementSlice";
+import { uiActions } from "../../../store/uiSlice";
 
 export default function ProjectsList({ projects, isSearchResult = false }) {
-  // const { selectProject } = useContext(ProjectManagementContext);
   const dispatch = useDispatch();
 
   function handleSelectProject(projectId) {
-    dispatch(projectManagementActions.selectProject(projectId));
+    dispatch(uiActions.setSelectedProject(projectId));
+    dispatch(uiActions.setActionType("editing"));
   }
 
   return (

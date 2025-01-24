@@ -1,26 +1,20 @@
-// import { React, useContext, useRef, useState, useEffect } from 'react';
-import { React, useRef, useState, useEffect } from 'react';
+import { React, useRef, useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
-// import { ProjectManagementContext } from '../../../store/project-management-context';
-import { projectManagementActions } from "../../../store/projectManagementSlice";
+import { projectsActions } from "../../../store/projectsSlice";
 
-import Check from '../../../assets/check-circle.svg';
-import Save from '../../../assets/check-lg.svg';
-import Pencil from '../../../assets/pencil-square.svg';
-import Delete from '../../../assets/x-square.svg';
+import Check from "../../../assets/check-circle.svg";
+import Save from "../../../assets/check-lg.svg";
+import Pencil from "../../../assets/pencil-square.svg";
+import Delete from "../../../assets/x-square.svg";
 
 export default function Task({ taskContent, projectId }) {
   const dispatch = useDispatch();
 
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: taskContent.id });
-
-  // const { changeTaskStatus, updateTask, deleteTask } = useContext(
-  //   ProjectManagementContext
-  // );
 
   const style = {
     transition,
@@ -36,18 +30,29 @@ export default function Task({ taskContent, projectId }) {
   }
 
   function handleSave(event) {
-    if (event.key && event.key !== 'Enter') return;
-    dispatch(projectManagementActions.updateTask(projectId, { ...taskContent, title: input.current.value }));
-    // updateTask(projectId, { ...taskContent, title: input.current.value });
+    if (event.key && event.key !== "Enter") return;
+    dispatch(
+      projectsActions.updateTask({
+        projectId,
+        updatedTask: { ...taskContent, title: input.current.value },
+      })
+    );
     setIsEditing((editing) => !editing);
   }
 
   function handleChangeTaskStatus(taskContentId) {
-    dispatch(projectManagementActions.changeTaskStatus(projectId, taskContentId));
+    dispatch(
+      projectsActions.changeTaskStatus({
+        projectId,
+        taskId: taskContentId,
+      })
+    );
   }
 
   function handleDeleteTask(taskContentId) {
-    dispatch(projectManagementActions.deleteTask(projectId, taskContentId));
+    dispatch(
+      projectsActions.deleteTask({ projectId, taskId: taskContentId })
+    );
   }
 
   useEffect(() => {
@@ -84,7 +89,7 @@ export default function Task({ taskContent, projectId }) {
         <>
           <p
             className={`whitespace-pre-wrap w-4/5${
-              taskContent.isCompleted ? ' line-through' : ''
+              taskContent.isCompleted ? " line-through" : ""
             }`}
           >
             {taskContent.title}
@@ -93,7 +98,7 @@ export default function Task({ taskContent, projectId }) {
             <button
               type="button"
               onClick={() => handleChangeTaskStatus(projectId, taskContent.id)}
-              title={taskContent.isCompleted ? 'Incomplete' : 'Complete'}
+              title={taskContent.isCompleted ? "Incomplete" : "Complete"}
             >
               <img src={Check} alt="check-circle" />
             </button>

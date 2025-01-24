@@ -1,14 +1,11 @@
 import {
   React,
-  // useContext,
   useRef,
   useEffect,
   useState,
   useCallback,
 } from 'react';
 import { useSelector } from 'react-redux';
-
-// import { ProjectManagementContext } from '../../../../store/project-management-context';
 
 import ContextMenu from './ContextMenu';
 import EmployeeItem from './EmployeeItem';
@@ -17,9 +14,8 @@ export default function EmployeesList({
   selectedEmployees,
   onEmployeeSelection,
 }) {
-  // const { projects, employees } = useContext(ProjectManagementContext);
-  const projects = useSelector(state => state.projectManagement.projects);
-  const employees = useSelector(state => state.projectManagement.employees);
+  const projects = useSelector(state => state.projects.projects);
+  const employees = useSelector(state => state.employees.employees);
 
   const [contextMenu, setContextMenu] = useState({
     isVisible: false,
@@ -71,9 +67,9 @@ export default function EmployeesList({
     };
   }, [contextMenu.isVisible, closeContextMenu]);
 
-  const getEmployeeProjectsCount = (employeeId) =>
+  const getEmployeeProjectsCount = (employeeName) =>
     projects.filter((project) =>
-      project.team.some((employee) => employee?.id === employeeId)
+      project.team.some((employee) => employee === employeeName)
     ).length;
 
   return (
@@ -89,7 +85,7 @@ export default function EmployeesList({
             isSelected={selectedEmployees.includes(employee.name)}
             onSelect={onEmployeeSelection}
             onContextMenu={openContextMenu}
-            projectsCount={getEmployeeProjectsCount(employee.id)}
+            projectsCount={getEmployeeProjectsCount(employee.name)}
           />
         ))}
       </div>

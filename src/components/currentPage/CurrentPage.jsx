@@ -1,8 +1,5 @@
-// import { React, useContext } from "react";
 import { React } from "react";
 import { useSelector } from "react-redux";
-
-// import { ProjectManagementContext } from "../../store/project-management-context";
 
 import GeneralPage from "./generalPage/GeneralPage";
 import ProjectForm from "./projectForm/ProjectForm";
@@ -11,12 +8,15 @@ import EmployeeProfile from "./EmployeeProfile";
 import EditEmployee from "./EditEmployee";
 
 export default function CurrentPage() {
-  // const { actionType, selectedProject, selectedEmployee } = useContext(
-  //   ProjectManagementContext
-  // );
-  const actionType = useSelector((state) => state.projectManagement.actionType);
-  const selectedProject = useSelector((state) => state.projectManagement.selectedProject);
-  const selectedEmployee = useSelector((state) => state.projectManagement.selectedEmployee);
+  const employees = useSelector((state) => state.employees.employees);
+  const projects = useSelector((state) => state.projects.projects);
+  const actionType = useSelector((state) => state.ui.actionType);
+  const selectedProjectId = useSelector(
+    (state) => state.ui.selectedProjectId
+  );
+  const selectedEmployeeId = useSelector(
+    (state) => state.ui.selectedEmployeeId
+  );
 
   if (actionType === "none") {
     return <GeneralPage />;
@@ -25,16 +25,36 @@ export default function CurrentPage() {
     return <ProjectForm />;
   }
   if (actionType === "editing") {
-    return <Project project={selectedProject} />;
+    return (
+      <Project
+        project={projects.find((project) => project.id === selectedProjectId)}
+      />
+    );
   }
   if (actionType === "editProject") {
-    return <ProjectForm project={selectedProject} />;
+    return (
+      <ProjectForm
+        project={projects.find((project) => project.id === selectedProjectId)}
+      />
+    );
   }
   if (actionType === "viewingProfile") {
-    return <EmployeeProfile employee={selectedEmployee} />;
+    return (
+      <EmployeeProfile
+        employee={employees.find(
+          (employee) => employee.id === selectedEmployeeId
+        )}
+      />
+    );
   }
   if (actionType === "editingProfile") {
-    return <EditEmployee employee={selectedEmployee} />;
+    return (
+      <EditEmployee
+        employee={employees.find(
+          (employee) => employee.id === selectedEmployeeId
+        )}
+      />
+    );
   }
 
   return null;

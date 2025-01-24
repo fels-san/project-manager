@@ -1,21 +1,17 @@
-// import { React, useState, useContext, useCallback, useRef } from 'react';
-import { React, useState, useCallback, useRef } from 'react';
-import { useSelector } from 'react-redux';
+import { React, useState, useCallback, useRef } from "react";
+import { useSelector } from "react-redux";
 
-// import { ProjectManagementContext } from '../../../store/project-management-context';
-
-import ProjectsList from './ProjectsList';
-import EmployeesList from './employeesList/EmployeesList';
-import TagsList from './TagsList';
-import SearchBar from './SearchBar';
-import Dropdown from './dropdown/Dropdown';
+import ProjectsList from "./ProjectsList";
+import EmployeesList from "./employeesList/EmployeesList";
+import TagsList from "./TagsList";
+import SearchBar from "./SearchBar";
+import Dropdown from "./dropdown/Dropdown";
 
 export default function GeneralPage() {
-  const projects = useSelector(state => state.projectManagement.projects);
+  const projects = useSelector((state) => state.projects.projects);
 
-  const [searchText, setSearchText] = useState('');
-  // const { projects } = useContext(ProjectManagementContext);
-  const [sortType, setSortType] = useState('By Project Status');
+  const [searchText, setSearchText] = useState("");
+  const [sortType, setSortType] = useState("By Project Status");
   const [isDescending, setIsDescending] = useState(true);
   const [selectedTags, setSelectedTags] = useState([]);
   const [selectedEmployees, setSelectedEmployees] = useState([]);
@@ -44,7 +40,7 @@ export default function GeneralPage() {
       }
       return [...prevTags, tag];
     });
-  },[]);
+  }, []);
 
   const handleEmployeeSelection = useCallback((employee) => {
     setSelectedEmployees((prevEmployees) => {
@@ -63,7 +59,7 @@ export default function GeneralPage() {
         project.description.toLowerCase().includes(searchText.toLowerCase());
 
       const matchesEmployees = selectedEmployees.every((employee) =>
-        project.team.some((teamMember) => teamMember.name === employee)
+        project.team.some((teamMember) => teamMember === employee)
       );
       const matchesTags = selectedTags.every((tag) =>
         project.tag.includes(tag)
@@ -78,13 +74,13 @@ export default function GeneralPage() {
       let comparison = 0;
 
       switch (sortType) {
-        case 'By Creation Date':
+        case "By Creation Date":
           comparison = b.id - a.id;
           break;
 
-        case 'By Project Status': {
-          const statusA = a.isCompleted ? 'completed' : 'current';
-          const statusB = b.isCompleted ? 'completed' : 'current';
+        case "By Project Status": {
+          const statusA = a.isCompleted ? "completed" : "current";
+          const statusB = b.isCompleted ? "completed" : "current";
           comparison = statusA.localeCompare(statusB);
           break;
         }
@@ -115,17 +111,17 @@ export default function GeneralPage() {
                 isDescending,
               }}
               options={[
-                { type: 'By Creation Date', isDescending: true },
-                { type: 'By Creation Date', isDescending: false },
-                { type: 'By Project Status', isDescending: true },
-                { type: 'By Project Status', isDescending: false },
+                { type: "By Creation Date", isDescending: true },
+                { type: "By Creation Date", isDescending: false },
+                { type: "By Project Status", isDescending: true },
+                { type: "By Project Status", isDescending: false },
               ]}
               onChange={handleSortChange}
             />
           </div>
           <ProjectsList
             projects={sortedProjects}
-            isSearchResult={searchText !== ''}
+            isSearchResult={searchText !== ""}
           />
         </div>
         <div className="w-1/5">
