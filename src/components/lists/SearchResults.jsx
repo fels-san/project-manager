@@ -1,7 +1,7 @@
 import { React } from "react";
 import { useDispatch } from "react-redux";
 
-import { uiActions } from "../../../store/uiSlice";
+import { uiActions } from "../../store/uiSlice";
 
 export default function SearchResults({ filteredProjects }) {
   const dispatch = useDispatch();

@@ -1,8 +1,8 @@
-import { React, useCallback, useState } from 'react';
+import { React, useCallback, useState } from "react";
 
-import DropdownItem from './DropdownItem';
-import SortIcon from './SortIcon';
-import ArrowIcon from './ArrowIcon';
+import DropdownItem from "./DropdownItem";
+import SortIcon from "./icons/SortIcon";
+import ArrowIcon from "./icons/ArrowIcon";
 
 export default function Dropdown({
   options,
@@ -30,7 +30,7 @@ export default function Dropdown({
       <button
         className={`${
           style ??
-          'text-white w-48 bg-stone-700 hover:bg-stone-800 focus:outline-none font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center justify-around'
+          "text-white w-48 bg-stone-700 hover:bg-stone-800 focus:outline-none font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center justify-around"
         }`}
         type="button"
         onClick={toggleDropdown}

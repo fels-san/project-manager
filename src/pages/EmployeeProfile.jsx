@@ -2,10 +2,10 @@ import { React } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams, Link } from "react-router-dom";
 
-import { employeesActions } from "../../store/employeesSlice";
-import { projectsActions } from "../../store/projectsSlice";
+import { employeesActions } from "../store/employeesSlice";
+import { projectsActions } from "../store/projectsSlice";
 
-import ProjectsList from "./generalPage/ProjectsList";
+import ProjectsList from "../components/lists/ProjectsList";
 
 export default function EmployeeProfile() {
   const dispatch = useDispatch();

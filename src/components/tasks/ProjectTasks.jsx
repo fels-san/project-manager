@@ -12,7 +12,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
-import { projectsActions } from "../../../store/projectsSlice";
+import { projectsActions } from "../../store/projectsSlice";
 
 import Task from "./Task";
 
@@ -54,7 +54,11 @@ export default function ProjectTasks({ project }) {
     const newPos = getTaskPos(over.id);
 
     dispatch(
-      projectsActions.updateTaskOrder({projectId: project.id, originalPos, newPos})
+      projectsActions.updateTaskOrder({
+        projectId: project.id,
+        originalPos,
+        newPos,
+      })
     );
   };
 

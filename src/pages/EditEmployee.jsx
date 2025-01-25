@@ -1,17 +1,17 @@
 import { React, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams, Link } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 
-import { uiActions } from "../../store/uiSlice";
-import { employeesActions } from "../../store/employeesSlice";
+import { employeesActions } from "../store/employeesSlice";
 
-import InputField from "./projectForm/InputField";
+import InputField from "../components/ui/InputField";
 
 export default function EditEmployee() {
   const dispatch = useDispatch();
 
   const employees = useSelector((state) => state.employees.employees);
 
+  const navigate = useNavigate();
   const params = useParams();
   const employee = employees.find((e) => e.id === params.employeeId);
 
@@ -41,7 +41,7 @@ export default function EditEmployee() {
       return;
     }
     dispatch(employeesActions.updateEmployee(formData));
-    dispatch(uiActions.setActionType("viewingProfile"));
+    navigate(`/employee/${employee.id}`);
   };
 
   return (
@@ -81,7 +81,7 @@ export default function EditEmployee() {
         onChange={(e) => handleChange("email", e.target.value)}
       />
       <div className="flex flex-row justify-end gap-3 mt-4">
-        <Link to={ `/employee/${employee.id}`}>Cancel</Link>
+        <Link to={`/employee/${employee.id}`}>Cancel</Link>
         <button
           type="button"
           onClick={handleSave}

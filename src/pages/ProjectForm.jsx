@@ -3,11 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import { useParams, useNavigate, Link } from "react-router-dom";
 
-import { projectsActions } from "../../../store/projectsSlice";
-import { employeesActions } from "../../../store/employeesSlice";
+import { projectsActions } from "../store/projectsSlice";
+import { employeesActions } from "../store/employeesSlice";
 
-import ListDisplay from "./ListDisplay";
-import InputField from "./InputField";
+import ListDisplay from "../components/ui/ListDisplay";
+import InputField from "../components/ui/InputField";
 
 function formatDate(date) {
   if (!date) return "";

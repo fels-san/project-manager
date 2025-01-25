@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Delete from '../../../assets/x.svg';
+import Delete from '../../assets/x.svg';
 
 export default function ListDisplay({ list, setList }) {
   function handleDeleteItem(item) {

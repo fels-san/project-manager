@@ -2,9 +2,9 @@ import { React } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-import { uiActions } from "../../../../store/uiSlice";
-import { projectsActions } from "../../../../store/projectsSlice";
-import { employeesActions } from "../../../../store/employeesSlice";
+import { uiActions } from "../../store/uiSlice";
+import { projectsActions } from "../../store/projectsSlice";
+import { employeesActions } from "../../store/employeesSlice";
 
 export default function ContextMenu({
   employee,

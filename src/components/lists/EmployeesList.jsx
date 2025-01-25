@@ -1,21 +1,15 @@
-import {
-  React,
-  useRef,
-  useEffect,
-  useState,
-  useCallback,
-} from 'react';
-import { useSelector } from 'react-redux';
+import { React, useRef, useEffect, useState, useCallback } from "react";
+import { useSelector } from "react-redux";
 
-import ContextMenu from './ContextMenu';
-import EmployeeItem from './EmployeeItem';
+import ContextMenu from "../ui/ContextMenu";
+import EmployeeItem from "./EmployeeItem";
 
 export default function EmployeesList({
   selectedEmployees,
   onEmployeeSelection,
 }) {
-  const projects = useSelector(state => state.projects.projects);
-  const employees = useSelector(state => state.employees.employees);
+  const projects = useSelector((state) => state.projects.projects);
+  const employees = useSelector((state) => state.employees.employees);
 
   const [contextMenu, setContextMenu] = useState({
     isVisible: false,
@@ -54,16 +48,16 @@ export default function EmployeesList({
     }
 
     if (contextMenu.isVisible) {
-      document.addEventListener('mousedown', handleClickOutside);
-      document.addEventListener('wheel', handleScroll);
+      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("wheel", handleScroll);
     } else {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('wheel', handleScroll);
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("wheel", handleScroll);
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('wheel', handleScroll);
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("wheel", handleScroll);
     };
   }, [contextMenu.isVisible, closeContextMenu]);
 

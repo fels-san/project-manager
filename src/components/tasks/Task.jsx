@@ -3,12 +3,12 @@ import { useDispatch } from "react-redux";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-import { projectsActions } from "../../../store/projectsSlice";
+import { projectsActions } from "../../store/projectsSlice";
 
-import Check from "../../../assets/check-circle.svg";
-import Save from "../../../assets/check-lg.svg";
-import Pencil from "../../../assets/pencil-square.svg";
-import Delete from "../../../assets/x-square.svg";
+import Check from "../../assets/check-circle.svg";
+import Save from "../../assets/check-lg.svg";
+import Pencil from "../../assets/pencil-square.svg";
+import Delete from "../../assets/x-square.svg";
 
 export default function Task({ taskContent, projectId }) {
   const dispatch = useDispatch();

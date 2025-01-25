@@ -2,11 +2,11 @@ import { React } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, Link, useNavigate } from "react-router-dom";
 
-import { projectsActions } from "../../../store/projectsSlice";
-import { uiActions } from "../../../store/uiSlice";
+import { projectsActions } from "../store/projectsSlice";
+import { uiActions } from "../store/uiSlice";
 
-import ProjectTasks from "./ProjectTasks";
-import Dropdown from "../generalPage/dropdown/Dropdown";
+import ProjectTasks from "../components/tasks/ProjectTasks";
+import Dropdown from "../components/ui/Dropdown";
 
 export default function Project() {
   function formatDate(date) {

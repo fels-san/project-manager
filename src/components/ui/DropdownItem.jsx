@@ -1,5 +1,5 @@
-import React from 'react';
-import SortIcon from './SortIcon';
+import React from "react";
+import SortIcon from "./icons/SortIcon";
 
 export default function DropdownItem({ onSelect, type, isDescending = null }) {
   return (

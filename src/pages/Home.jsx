@@ -1,13 +1,13 @@
 import { React, useState, useCallback, useRef } from "react";
 import { useSelector } from "react-redux";
 
-import ProjectsList from "./ProjectsList";
-import EmployeesList from "./employeesList/EmployeesList";
-import TagsList from "./TagsList";
-import SearchBar from "./SearchBar";
-import Dropdown from "./dropdown/Dropdown";
+import ProjectsList from "../components/lists/ProjectsList";
+import EmployeesList from "../components/lists/EmployeesList";
+import TagsList from "../components/lists/TagsList";
+import SearchBar from "../components/ui/SearchBar";
+import Dropdown from "../components/ui/Dropdown";
 
-export default function GeneralPage() {
+export default function Home() {
   const projects = useSelector((state) => state.projects.projects);
 
   const [searchText, setSearchText] = useState("");

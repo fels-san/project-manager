@@ -2,7 +2,7 @@ import { React } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-import { uiActions } from "../../../store/uiSlice";
+import { uiActions } from "../../store/uiSlice";
 
 export default function ProjectsList({ projects, isSearchResult = false }) {
   const dispatch = useDispatch();
