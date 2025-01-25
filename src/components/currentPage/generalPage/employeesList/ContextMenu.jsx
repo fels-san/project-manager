@@ -1,9 +1,10 @@
-import { React } from 'react';
-import { useDispatch } from 'react-redux';
+import { React } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
-import { uiActions } from '../../../../store/uiSlice';
-import { projectsActions } from '../../../../store/projectsSlice';
-import { employeesActions } from '../../../../store/employeesSlice';
+import { uiActions } from "../../../../store/uiSlice";
+import { projectsActions } from "../../../../store/projectsSlice";
+import { employeesActions } from "../../../../store/employeesSlice";
 
 export default function ContextMenu({
   employee,
@@ -12,24 +13,25 @@ export default function ContextMenu({
   isVisible,
 }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   function handleSelectEmployee() {
     dispatch(uiActions.setSelectedEmployee(employee.id));
-    dispatch(uiActions.setActionType("viewingProfile"));
+    navigate(`/employee/${employee.id}`);
   }
-  
+
   function handleDeleteEmployee() {
     // eslint-disable-next-line no-restricted-globals, no-alert
     const isEmployeeDeleted = confirm(
-      'Are you sure you want to delete this employee? This action cannot be undone.'
+      "Are you sure you want to delete this employee? This action cannot be undone."
     );
     if (isEmployeeDeleted) {
       dispatch(employeesActions.deleteEmployee(employee.id));
       dispatch(projectsActions.deleteEmployeeFromProjects(employee.name));
-      dispatch(uiActions.setActionType("none"));
+      navigate("/");
     }
   }
-  
+
   if (!isVisible) return null;
 
   return (

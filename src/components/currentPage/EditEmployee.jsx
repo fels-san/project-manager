@@ -1,13 +1,19 @@
 import { React, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams, Link } from "react-router-dom";
 
 import { uiActions } from "../../store/uiSlice";
 import { employeesActions } from "../../store/employeesSlice";
 
 import InputField from "./projectForm/InputField";
 
-export default function EditEmployee({ employee }) {
+export default function EditEmployee() {
   const dispatch = useDispatch();
+
+  const employees = useSelector((state) => state.employees.employees);
+
+  const params = useParams();
+  const employee = employees.find((e) => e.id === params.employeeId);
 
   const [formData, setFormData] = useState({
     id: employee.id,
@@ -75,7 +81,7 @@ export default function EditEmployee({ employee }) {
         onChange={(e) => handleChange("email", e.target.value)}
       />
       <div className="flex flex-row justify-end gap-3 mt-4">
-        <button type="button">Cancel</button>
+        <Link to={ `/employee/${employee.id}`}>Cancel</Link>
         <button
           type="button"
           onClick={handleSave}

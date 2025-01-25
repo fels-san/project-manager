@@ -1,13 +1,10 @@
 import { React } from "react";
-import { useDispatch, useSelector } from "react-redux";
-
-import { uiActions } from "../store/uiSlice";
+import { useSelector } from "react-redux";
+import { NavLink } from "react-router-dom";
 
 export default function Navigation() {
-  const dispatch = useDispatch();
   const projects = useSelector((state) => state.projects.projects);
   const employees = useSelector((state) => state.employees.employees);
-  const actionType = useSelector((state) => state.ui.actionType);
   const selectedProjectId = useSelector((state) => state.ui.selectedProjectId);
   const selectedEmployeeId = useSelector(
     (state) => state.ui.selectedEmployeeId
@@ -19,82 +16,74 @@ export default function Navigation() {
     (employee) => employee.id === selectedEmployeeId
   );
 
-  function handleChangePage(pageName) {
-    dispatch(uiActions.setPage(pageName));
-  }
-
   return (
     <nav className="w-full h-auto px-0 mt-5">
       <ul className="flex flex-row gap-4">
         <li>
-          <button
-            type="button"
-            className={`${
-              actionType === "none"
-                ? "bg-stone-50 text-stone-600"
-                : "bg-stone-100 text-stone-400"
-            } px-5 pt-4 pb-2 rounded-t-md font-bold cursor-pointer`}
-            onClick={() => handleChangePage("general")}
+          <NavLink
+            to="/"
+            className={({ isActive }) =>
+              isActive
+                ? "bg-stone-50 text-stone-600 px-5 pt-4 pb-2 rounded-t-md font-bold cursor-pointer block"
+                : "bg-stone-100 text-stone-400 px-5 pt-4 pb-2 rounded-t-md font-bold cursor-pointer block"
+            }
           >
             General{" "}
             <div className="inline bg-stone-200 rounded-full px-1 py-0.5">
               {projects.length}
             </div>
-          </button>
+          </NavLink>
         </li>
         <li>
-          <button
-            type="button"
-            className={`${
-              actionType === "statitic"
-                ? "bg-stone-50 text-stone-600"
-                : "bg-stone-100 text-stone-400"
-            } px-5 pt-4 pb-2 rounded-t-md font-bold cursor-pointer`}
+          <NavLink
+            to="/statitic"
+            className={({ isActive }) =>
+              isActive
+                ? "bg-stone-50 text-stone-600 px-5 pt-4 pb-2 rounded-t-md font-bold cursor-pointer block"
+                : "bg-stone-100 text-stone-400 px-5 pt-4 pb-2 rounded-t-md font-bold cursor-pointer block"
+            }
           >
             Statitic
-          </button>
+          </NavLink>
         </li>
-        {selectedProject ? (
+        {!selectedProject && <li>
+          <NavLink
+            to="/project/new"
+            className={({ isActive }) =>
+              isActive
+                ? "bg-stone-50 text-stone-600 px-5 pt-4 pb-2 rounded-t-md font-bold cursor-pointer block"
+                : "bg-stone-100 text-stone-400 px-5 pt-4 pb-2 rounded-t-md font-bold cursor-pointer block"
+            }
+          >
+            New Project
+          </NavLink>
+        </li>}
+        {selectedProject && (
           <li>
-            <button
-              type="button"
-              className={`${
-                actionType === "editing"
-                  ? "bg-stone-50 text-stone-600"
-                  : "bg-stone-100 text-stone-400"
-              } px-5 pt-4 pb-2 rounded-t-md font-bold cursor-pointer`}
-              onClick={() => handleChangePage("current project")}
+            <NavLink
+              to={`/project/${selectedProjectId}`}
+              className={({ isActive }) =>
+                isActive
+                  ? "bg-stone-50 text-stone-600 px-5 pt-4 pb-2 rounded-t-md font-bold cursor-pointer block"
+                  : "bg-stone-100 text-stone-400 px-5 pt-4 pb-2 rounded-t-md font-bold cursor-pointer block"
+              }
             >
               Current Project
-            </button>
-          </li>
-        ) : (
-          <li>
-            <button
-              type="button"
-              className={`${
-                actionType === "creating"
-                  ? "bg-stone-50 text-stone-600"
-                  : "bg-stone-100 text-stone-400"
-              } px-5 pt-4 pb-2 rounded-t-md font-bold cursor-pointer`}
-              onClick={() => handleChangePage("new project")}
-            >
-              New Project
-            </button>
+            </NavLink>
           </li>
         )}
-        {actionType === "viewingProfile" && selectedEmployee && (
+        {selectedEmployee && (
           <li>
-            <button
-              type="button"
-              className={`${
-                actionType === "viewingProfile"
-                  ? "bg-stone-50 text-stone-600"
-                  : "bg-stone-100 text-stone-400"
-              } px-5 pt-4 pb-2 rounded-t-md font-bold cursor-pointer`}
+            <NavLink
+              to={`/employee/${selectedEmployeeId}`}
+              className={({ isActive }) =>
+                isActive
+                  ? "bg-stone-50 text-stone-600 px-5 pt-4 pb-2 rounded-t-md font-bold cursor-pointer block"
+                  : "bg-stone-100 text-stone-400 px-5 pt-4 pb-2 rounded-t-md font-bold cursor-pointer block"
+              }
             >
               {selectedEmployee.name}
-            </button>
+            </NavLink>
           </li>
         )}
       </ul>

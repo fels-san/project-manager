@@ -1,15 +1,20 @@
 import { React } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams, Link } from "react-router-dom";
 
-import { uiActions } from "../../store/uiSlice";
 import { employeesActions } from "../../store/employeesSlice";
 import { projectsActions } from "../../store/projectsSlice";
 
 import ProjectsList from "./generalPage/ProjectsList";
 
-export default function EmployeeProfile({ employee }) {
+export default function EmployeeProfile() {
   const dispatch = useDispatch();
   const projects = useSelector((state) => state.projects.projects);
+  const employees = useSelector((state) => state.employees.employees);
+
+  const navigate = useNavigate();
+  const params = useParams();
+  const employee = employees.find((e) => e.id === params.employeeId);
 
   const filteredProjects = projects.filter((project) =>
     project.team.some((teamMember) => teamMember.id === employee.id)
@@ -23,12 +28,8 @@ export default function EmployeeProfile({ employee }) {
     if (isEmployeeDeleted) {
       dispatch(employeesActions.deleteEmployee(employee.id));
       dispatch(projectsActions.deleteEmployeeFromProjects(employee.name));
-      dispatch(uiActions.setActionType("none"));
+      navigate("/");
     }
-  }
-
-  function handleEditEmployee() {
-    dispatch(uiActions.setActionType("editingProfile"));
   }
 
   function formatDateAge(birthDate) {
@@ -102,9 +103,7 @@ export default function EmployeeProfile({ employee }) {
         </div>
 
         <div className="flex flex-col">
-          <button type="button" onClick={() => handleEditEmployee()}>
-            Edit
-          </button>
+          <Link to={`/employee/${employee.id}/edit`}>Edit</Link>
           <button type="button" onClick={handleDeleteEmployee}>
             Delete
           </button>

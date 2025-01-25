@@ -1,5 +1,6 @@
 import { React } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useParams, Link, useNavigate } from "react-router-dom";
 
 import { projectsActions } from "../../../store/projectsSlice";
 import { uiActions } from "../../../store/uiSlice";
@@ -7,7 +8,7 @@ import { uiActions } from "../../../store/uiSlice";
 import ProjectTasks from "./ProjectTasks";
 import Dropdown from "../generalPage/dropdown/Dropdown";
 
-export default function Project({ project }) {
+export default function Project() {
   function formatDate(date) {
     const options = {
       year: "numeric",
@@ -19,19 +20,19 @@ export default function Project({ project }) {
 
   const dispatch = useDispatch();
   const employees = useSelector((state) => state.employees.employees);
+  const projects = useSelector((state) => state.projects.projects);
+
+  const navigate = useNavigate();
+  const params = useParams();
+  const project = projects.find((p) => p.id === params.projectId);
 
   function handleChangeProjectStatus(projectId) {
     dispatch(projectsActions.changeProjectStatus(projectId));
-    dispatch(uiActions.setActionType("editing"));
-  }
-
-  function handleEditProject() {
-    dispatch(uiActions.setActionType("editProject"));
   }
 
   function handleDeleteProject(projectId) {
     dispatch(projectsActions.deleteProject(projectId));
-    dispatch(uiActions.setActionType("none"));
+    navigate("/");
   }
 
   function handleSelectEmployee(employeeName) {
@@ -39,7 +40,7 @@ export default function Project({ project }) {
       (employee) => employee.name === employeeName
     ).id;
     dispatch(uiActions.setSelectedEmployee(employeeId));
-    dispatch(uiActions.setActionType("viewingProfile"));
+    navigate(`/employee/${employeeId}`);
   }
 
   return (
@@ -64,9 +65,7 @@ export default function Project({ project }) {
         </div>
 
         <div className="flex flex-col items-end text-right">
-          <button type="button" onClick={() => handleEditProject()}>
-            Edit
-          </button>
+          <Link to={`/project/${project.id}/edit`}>Edit</Link>
           <button type="button" onClick={() => handleDeleteProject(project.id)}>
             Delete
           </button>

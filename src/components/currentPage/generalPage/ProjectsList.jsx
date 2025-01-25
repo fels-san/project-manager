@@ -1,14 +1,16 @@
 import { React } from "react";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 import { uiActions } from "../../../store/uiSlice";
 
 export default function ProjectsList({ projects, isSearchResult = false }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   function handleSelectProject(projectId) {
     dispatch(uiActions.setSelectedProject(projectId));
-    dispatch(uiActions.setActionType("editing"));
+    navigate(`/project/${projectId}`);
   }
 
   return (

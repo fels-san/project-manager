@@ -1,10 +1,10 @@
 import { React, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
+import { useParams, useNavigate, Link } from "react-router-dom";
 
 import { projectsActions } from "../../../store/projectsSlice";
 import { employeesActions } from "../../../store/employeesSlice";
-import { uiActions } from "../../../store/uiSlice";
 
 import ListDisplay from "./ListDisplay";
 import InputField from "./InputField";
@@ -18,9 +18,14 @@ function formatDate(date) {
   return `${year}-${month}-${day}`;
 }
 
-export default function ProjectForm({ project = null }) {
+export default function ProjectForm() {
   const dispatch = useDispatch();
   const employees = useSelector((state) => state.employees.employees);
+  const projects = useSelector((state) => state.projects.projects);
+
+  const navigate = useNavigate();
+  const params = useParams();
+  const project = projects.find((p) => p.id === params.projectId);
 
   const [tags, setTags] = useState(project ? project.tag : []);
   const [team, setTeam] = useState(project ? project.team : []);
@@ -76,7 +81,7 @@ export default function ProjectForm({ project = null }) {
           tasks: project.tasks,
         })
       );
-      dispatch(uiActions.setActionType("editing"));
+      navigate(`/project/${project.id}`);
     } else {
       dispatch(employeesActions.addEmployees(correctedTeam));
       dispatch(
@@ -94,18 +99,8 @@ export default function ProjectForm({ project = null }) {
           tasks: [],
         })
       );
-      dispatch(uiActions.setActionType("none"));
+      navigate("/");
     }
-  }
-
-  function handleCancelProject() {
-    // dispatch(projectManagementActions.cancelProject());
-    dispatch(uiActions.setActionType("none"));
-  }
-
-  function handleCancelEditing() {
-    // dispatch(projectManagementActions.cancelEditing());
-    dispatch(uiActions.setActionType("editing"));
   }
 
   const handleAddTeamMember = useCallback((newMember) => {
@@ -159,12 +154,7 @@ export default function ProjectForm({ project = null }) {
       <InputField label="Tags" isListInput onAddItem={handleAddTag} />
       <ListDisplay list={tags} setList={setTags} />
       <div className="flex flex-row justify-end gap-3 mb-2 mt-2">
-        <button
-          type="button"
-          onClick={project ? handleCancelEditing : handleCancelProject}
-        >
-          Cancel
-        </button>
+        <Link to={project ? `/project/${project.id}` : "/"}>Cancel</Link>
         <button
           type="button"
           onClick={handleSave}
