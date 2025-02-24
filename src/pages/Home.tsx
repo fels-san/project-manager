@@ -78,8 +78,9 @@ export default function Home() {
       let comparison = 0;
 
       switch (sortType) {
-        case "By Creation Date":
-          comparison = b.id - a.id;
+        case "By Deadline":
+          comparison =
+            new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime();
           break;
 
         case "By Project Status": {
@@ -116,8 +117,8 @@ export default function Home() {
               }}
               style=""
               options={[
-                { type: "By Creation Date", isDescending: true },
-                { type: "By Creation Date", isDescending: false },
+                { type: "By Deadline", isDescending: true },
+                { type: "By Deadline", isDescending: false },
                 { type: "By Project Status", isDescending: true },
                 { type: "By Project Status", isDescending: false },
               ]}
