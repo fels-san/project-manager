@@ -6,7 +6,7 @@ import ProjectForm from "./pages/ProjectForm";
 import Project from "./pages/Project";
 import EmployeeProfile from "./pages/EmployeeProfile";
 import EditEmployee from "./pages/EditEmployee";
-import Statitic from "./pages/Statitic";
+import Statitic from "./pages/Statistic";
 
 const router = createBrowserRouter(
   [

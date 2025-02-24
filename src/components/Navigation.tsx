@@ -42,7 +42,7 @@ export default function Navigation() {
                 : "bg-stone-100 text-stone-400 px-5 pt-4 pb-2 rounded-t-md font-bold cursor-pointer block"
             }
           >
-            Statitic
+            Statistics
           </NavLink>
         </li>
         {!selectedProject && <li>
