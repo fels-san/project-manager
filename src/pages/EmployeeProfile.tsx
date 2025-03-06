@@ -8,13 +8,16 @@ import ProjectsList from "../components/lists/ProjectsList";
 import { formatDateAge } from "../utils/utils";
 
 export default function EmployeeProfile() {
+  console.log("я тут!");
   const dispatch = useAppDispatch();
   const projects = useAppSelector((state) => state.projects.projects);
   const employees = useAppSelector((state) => state.employees.employees);
 
   const navigate = useNavigate();
   const params = useParams();
+  console.log(params);
   const employee = employees.find((e) => e.name === params.employeeName)!;
+  console.log(employee);
 
   const filteredProjects = projects.filter((project) =>
     project.team.some((teamMember) => teamMember === employee.name)
@@ -64,7 +67,7 @@ export default function EmployeeProfile() {
             </p>{" "}
             <p>
               <strong>Joined the company:</strong>{" "}
-              {employee.companyStartYear?.getFullYear() ?? "N/A"}
+              {employee.companyStartYear ? new Date(employee.companyStartYear).getFullYear() : "N/A"}
             </p>
           </div>
         </div>

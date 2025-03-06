@@ -9,16 +9,16 @@ export function getEmployeeProjectsCount(
   ).length;
 }
 
-export function formatDateAge(birthDate: Date | undefined) {
-  if (!birthDate) return null;
+export function formatDateAge(dateString: string | undefined) {
+  if (!dateString) return null;
 
+  const date = new Date(dateString);
   const now = new Date();
 
-  const age = now.getFullYear() - birthDate.getFullYear();
+  const age = now.getFullYear() - date.getFullYear();
   const hasBirthdayPassed =
-    now.getMonth() > birthDate.getMonth() ||
-    (now.getMonth() === birthDate.getMonth() &&
-      now.getDate() >= birthDate.getDate());
+    now.getMonth() > date.getMonth() ||
+    (now.getMonth() === date.getMonth() && now.getDate() >= date.getDate());
   const finalAge = hasBirthdayPassed ? age : age - 1;
 
   const months = [
@@ -35,9 +35,9 @@ export function formatDateAge(birthDate: Date | undefined) {
     "Nov",
     "Dec",
   ];
-  const formattedDate = `${birthDate.getDate()} ${
-    months[birthDate.getMonth()]
-  }. ${birthDate.getFullYear()}`;
+  const formattedDate = `${date.getDate()} ${
+    months[date.getMonth()]
+  }. ${date.getFullYear()}`;
 
   return `${formattedDate} (${finalAge} years old)`;
 }

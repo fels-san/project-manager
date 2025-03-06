@@ -25,12 +25,7 @@ export default function EditEmployee() {
   });
 
   function handleChange(field: string, value: string) {
-    const updatedValue =
-      (field === "birthDate" || field === "companyStartYear") && value
-        ? new Date(value)
-        : value;
-
-    setFormData((prev) => ({ ...prev, [field]: updatedValue }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   }
 
   function handleSave(event: React.FormEvent<HTMLFormElement>) {

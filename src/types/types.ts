@@ -1,8 +1,8 @@
 export type Employee = {
   name: string;
   position?: string;
-  birthDate?: Date;
-  companyStartYear?: Date;
+  birthDate?: string;
+  companyStartYear?: string;
   phone?: string;
   email?: string;
   isSelected?: boolean;
