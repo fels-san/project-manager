@@ -63,7 +63,10 @@ export default function InputField({
   }
 
   function handleSuggestionClick(suggestion: string) {
-    setInputValue(suggestion);
+    if (!onAddItem) return;
+
+    onAddItem(suggestion);
+    setInputValue("");
     setFilteredSuggestions([]);
   }
 
