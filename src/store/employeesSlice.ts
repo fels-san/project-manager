@@ -3,10 +3,6 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { storedEmployees } from "../data/data";
 import { Employee } from "../types/types";
 
-// import localStorageHelper from '../localStorageHelper';
-
-// const storedEmployees = [...localStorageHelper.getEmployees()];
-
 type employeesState = {
   employees: Employee[];
 };
@@ -49,22 +45,6 @@ const employeesSlice = createSlice({
         return employee;
       });
     },
-
-    // selectEmployee(state, action) {
-    //   const selectedId = action.payload;
-
-    //   state.employees = state.employees.map((employee) => ({
-    //     ...employee,
-    //     isSelected: employee.id === selectedId,
-    //   }));
-    // },
-
-    // clearSelection(state) {
-    //   state.employees = state.employees.map((employee) => ({
-    //     ...employee,
-    //     isSelected: false,
-    //   }));
-    // },
   },
 });
 
