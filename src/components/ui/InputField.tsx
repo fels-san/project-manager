@@ -1,21 +1,23 @@
-import { useState } from 'react';
+import { useState } from "react";
 
 type InputFieldProps = {
   label: string;
   type?: string;
   defaultValue?: string;
   onAddItem?: (value: string) => void;
-  onChange?: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  onChange?: (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
   suggestionsList?: string[];
   isTextArea?: boolean;
   isListInput?: boolean;
   hasError?: boolean;
-}
+};
 
 export default function InputField({
   label,
-  type = 'text',
-  defaultValue = '',
+  type = "text",
+  defaultValue = "",
   onAddItem,
   onChange,
   suggestionsList = [],
@@ -26,7 +28,9 @@ export default function InputField({
   const [inputValue, setInputValue] = useState<string>(defaultValue);
   const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
 
-  function handleInputChange (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+  function handleInputChange(
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) {
     const { value } = event.target;
     setInputValue(value);
 
@@ -42,17 +46,18 @@ export default function InputField({
     } else {
       setFilteredSuggestions([]);
     }
-  };
+  }
 
   function handleAddItem(event: React.KeyboardEvent<HTMLInputElement>) {
-    if (event.key !== 'Enter' || !isListInput) return;
+    if (event.key !== "Enter" || !isListInput) return;
     if (!onAddItem) return;
+    event.preventDefault();
 
     const value = inputValue.trim();
 
     if (value) {
       onAddItem(value);
-      setInputValue('');
+      setInputValue("");
       setFilteredSuggestions([]);
     }
   }
@@ -60,12 +65,12 @@ export default function InputField({
   function handleSuggestionClick(suggestion: string) {
     setInputValue(suggestion);
     setFilteredSuggestions([]);
-  };
+  }
 
   return (
     <div className="mt-4">
       <label
-        htmlFor={isTextArea ? 'textarea-id' : 'input-id'}
+        htmlFor={isTextArea ? "textarea-id" : "input-id"}
         className="uppercase font-bold text-stone-600"
       >
         {label}
@@ -74,7 +79,7 @@ export default function InputField({
         <textarea
           id="textarea-id"
           className={`${
-            hasError ? 'border-red-500 ' : 'border-stone-300 '
+            hasError ? "border-red-500 " : "border-stone-300 "
           }bg-stone-200 w-full h-20 px-2 mt-1 border-b-2 focus:outline-none focus:border-b-2 focus:border-stone-900`}
           defaultValue={defaultValue}
           onChange={handleInputChange}
@@ -84,13 +89,12 @@ export default function InputField({
         <input
           id="input-id"
           className={`${
-            hasError ? 'border-red-500 ' : 'border-stone-300 '
+            hasError ? "border-red-500 " : "border-stone-300 "
           }bg-stone-200 w-full h-10 px-2 mt-1 border-b-2 focus:outline-none focus:border-b-2 focus:border-stone-900`}
           type={type}
           value={inputValue}
           onKeyDown={handleAddItem}
           onChange={handleInputChange}
-          required
         />
       )}
       {filteredSuggestions.length > 0 && (
@@ -104,7 +108,7 @@ export default function InputField({
                   tabIndex={0}
                   onClick={() => handleSuggestionClick(suggestion)}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
+                    if (e.key === "Enter" || e.key === " ") {
                       handleSuggestionClick(suggestion);
                     }
                   }}

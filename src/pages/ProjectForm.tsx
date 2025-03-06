@@ -45,7 +45,9 @@ export default function ProjectForm() {
 
   const suggestionsList = employees.map((employee) => employee.name);
 
-  function handleSave() {
+  function handleSave(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
     const newErrors: {
       title: boolean;
       description: boolean;
@@ -59,7 +61,7 @@ export default function ProjectForm() {
     if (!formData.dueDate) newErrors.dueDate = true;
 
     setErrors(newErrors);
-    if (Object.values(newErrors).some(error => error)) return;
+    if (Object.values(newErrors).some((error) => error)) return;
 
     const correctedTeam = team.map((employee) => ({
       name: employee,
@@ -118,7 +120,10 @@ export default function ProjectForm() {
   }
 
   return (
-    <div className="box-border w-full h-full flex flex-col pt-9 pb-10 pl-10 pr-44 bg-stone-50 overflow-y-scroll">
+    <form
+      onSubmit={handleSave}
+      className="box-border w-full h-full flex flex-col pt-9 pb-10 pl-10 pr-44 bg-stone-50 overflow-y-scroll"
+    >
       <InputField
         label="Title"
         hasError={errors.title}
@@ -158,13 +163,13 @@ export default function ProjectForm() {
       <div className="flex flex-row justify-end gap-3 mb-2 mt-2">
         <Link to={project ? `/project/${project.id}` : "/"}>Cancel</Link>
         <button
-          type="button"
-          onClick={handleSave}
+          type="submit"
+          // onClick={handleSave}
           className="bg-stone-700 text-stone-50 rounded-md px-6 py-2"
         >
           Save
         </button>
       </div>
-    </div>
+    </form>
   );
 }
