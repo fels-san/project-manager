@@ -7,12 +7,14 @@ import Project from "./pages/Project";
 import EmployeeProfile from "./pages/EmployeeProfile";
 import EditEmployee from "./pages/EditEmployee";
 import Statitic from "./pages/Statistic";
+import ErrorPage from "./pages/ErrorPage";
 
 const router = createBrowserRouter(
   [
     {
       path: "/",
       element: <RootLayout />,
+      errorElement: <ErrorPage />,
       children: [
         { index: true, element: <Home /> },
         {
