@@ -27,8 +27,6 @@ export default function Statistic() {
   const employeeLoadData = getEmployeeLoadData(employees, projects);
   const projectsByMonthData = getProjectsByMonthData(projects);
 
-  console.log(projectsByMonthData);
-
   return (
     <div className="box-border w-full h-full flex flex-col py-12 pl-10 pr-44 bg-stone-50 overflow-y-auto gap-10">
       <CompletedTasksChart completedTasksData={completedTasksData} />

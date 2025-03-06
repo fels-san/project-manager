@@ -13,9 +13,6 @@ export default function EmployeeProfile() {
 
   const navigate = useNavigate();
   const params = useParams();
-  console.log(params);
-  console.log(projects);
-  console.log(employees);
   const employee = employees.find((e) => e.name === params.employeeName)!;
 
   const filteredProjects = projects.filter((project) =>
