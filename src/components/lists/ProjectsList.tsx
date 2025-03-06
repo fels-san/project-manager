@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-
 import { uiActions } from "../../store/uiSlice";
 import { useAppDispatch } from "../../hooks";
 import { Project } from "../../types/types";
@@ -30,7 +29,7 @@ export default function ProjectsList({
             tabIndex={0}
             key={project.id}
             className={`${
-              project.isCompleted === true ? "opacity-30" : ""
+              project.isCompleted ? "opacity-30" : ""
             } border-2 border-stone-900 rounded-md p-4 mb-4 cursor-pointer`}
             onClick={() => handleSelectProject(project.id)}
             onKeyDown={(e) => {
