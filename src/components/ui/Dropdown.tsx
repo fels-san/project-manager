@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useState } from "react";
 
 import DropdownItem from "./DropdownItem";
 import SortIcon from "./icons/SortIcon";
@@ -23,14 +23,11 @@ export default function Dropdown({
     setIsDropdownOpen((prev) => !prev);
   };
 
-  const handleSelect = useCallback(
-    (type: string, isDescending?: boolean) => {
-      onChange(type, isDescending);
+  function handleSelect(type: string, isDescending?: boolean) {
+    onChange(type, isDescending);
 
-      toggleDropdown();
-    },
-    [onChange]
-  );
+    toggleDropdown();
+  }
 
   const buttonStyle =
     style === ""
@@ -39,11 +36,7 @@ export default function Dropdown({
 
   return (
     <div className="relative">
-      <button
-        className={buttonStyle}
-        type="button"
-        onClick={toggleDropdown}
-      >
+      <button className={buttonStyle} type="button" onClick={toggleDropdown}>
         {`${selectedOption.type} `}
         {selectedOption.isDescending != null && (
           <SortIcon isDescending={selectedOption.isDescending} />

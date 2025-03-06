@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useParams, useNavigate, Link } from "react-router-dom";
 
@@ -107,13 +107,13 @@ export default function ProjectForm() {
     }
   }
 
-  const handleAddTeamMember = useCallback((newMember: string) => {
+  function handleAddTeamMember(newMember: string) {
     setTeam((prevTeam) => [...prevTeam, newMember]);
-  }, []);
+  }
 
-  const handleAddTag = useCallback((newTag: string) => {
+  function handleAddTag(newTag: string) {
     setTags((prevTags) => [...prevTags, newTag]);
-  }, []);
+  }
 
   function handleChange(field: string, value: string) {
     setFormData((prev) => ({ ...prev, [field]: value }));

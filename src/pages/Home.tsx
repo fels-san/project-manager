@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useRef } from "react";
 
 import ProjectsList from "../components/lists/ProjectsList";
 import EmployeesList from "../components/lists/EmployeesList";
@@ -25,35 +25,32 @@ export default function Home() {
     }
   }
 
-  const handleSearchChange = useCallback((value: string) => {
+  function handleSearchChange(value: string) {
     setSearchText(value);
-  }, []);
+  }
 
-  const handleSortChange = useCallback(
-    (type: string, descending: boolean = false) => {
-      setSortType(type);
-      setIsDescending(descending);
-    },
-    []
-  );
+  function handleSortChange(type: string, descending: boolean = false) {
+    setSortType(type);
+    setIsDescending(descending);
+  }
 
-  const handleTagSelection = useCallback((tag: string) => {
+  function handleTagSelection(tag: string) {
     setSelectedTags((prevTags) => {
       if (prevTags.includes(tag)) {
         return prevTags.filter((t) => t !== tag);
       }
       return [...prevTags, tag];
     });
-  }, []);
+  }
 
-  const handleEmployeeSelection = useCallback((employee: string) => {
+  function handleEmployeeSelection(employee: string) {
     setSelectedEmployees((prevEmployees) => {
       if (prevEmployees.includes(employee)) {
         return prevEmployees.filter((t) => t !== employee);
       }
       return [...prevEmployees, employee];
     });
-  }, []);
+  }
 
   function getFilteredProjects() {
     scrollToTop();

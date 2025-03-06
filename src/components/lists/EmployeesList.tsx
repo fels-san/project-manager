@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState, useCallback } from "react";
+import { useRef, useEffect, useState } from "react";
 
 import { useAppSelector } from "../../hooks";
 import ContextMenu from "../ui/ContextMenu";
@@ -29,22 +29,25 @@ export default function EmployeesList({
 
   const menuRef = useRef<HTMLDivElement | null>(null);
 
-  const openContextMenu = useCallback((event: React.MouseEvent<HTMLButtonElement>, employee: Employee) => {
+  function openContextMenu(
+    event: React.MouseEvent<HTMLButtonElement>,
+    employee: Employee
+  ) {
     event.preventDefault();
     setContextMenu({
       isVisible: true,
       position: { x: event.clientX, y: event.clientY },
       employee,
     });
-  }, []);
+  }
 
-  const closeContextMenu = useCallback(() => {
+  function closeContextMenu() {
     setContextMenu({
       isVisible: false,
       position: { x: 0, y: 0 },
       employee: null,
     });
-  }, []);
+  }
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -93,12 +96,14 @@ export default function EmployeesList({
           />
         ))}
       </div>
-      {contextMenu.employee && <ContextMenu
-        position={contextMenu.position}
-        isVisible={contextMenu.isVisible}
-        employee={contextMenu.employee}
-        menuRef={menuRef}
-      />}
+      {contextMenu.employee && (
+        <ContextMenu
+          position={contextMenu.position}
+          isVisible={contextMenu.isVisible}
+          employee={contextMenu.employee}
+          menuRef={menuRef}
+        />
+      )}
     </div>
   );
 }
