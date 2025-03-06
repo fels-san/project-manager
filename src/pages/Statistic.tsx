@@ -26,12 +26,12 @@ import {
   getProjectsByMonthData,
 } from "../utils/statistics";
 
-import CompletedTasksChart from "../components/grap/CompletedTasksChart";
-import EmployeePositionChart from "../components/grap/EmployeePositionChart";
-import EmployeeStartYearChart from "../components/grap/EmployeeStartYearChart";
-import ProjectDeadlinesChart from "../components/grap/ProjectDeadlinesChart";
-import EmployeeLoadChart from "../components/grap/EmployeeLoadChart";
-import ProjectsByMonthChart from "../components/grap/ProjectsByMonthChart";
+import CompletedTasksChart from "../components/charts/CompletedTasksChart";
+import EmployeePositionChart from "../components/charts/EmployeePositionChart";
+import EmployeeStartYearChart from "../components/charts/EmployeeStartYearChart";
+import ProjectDeadlinesChart from "../components/charts/ProjectDeadlinesChart";
+import EmployeeLoadChart from "../components/charts/EmployeeLoadChart";
+import ProjectsByMonthChart from "../components/charts/ProjectsByMonthChart";
 
 export default function Statistic() {
   const employees = useAppSelector((state) => state.employees.employees);
