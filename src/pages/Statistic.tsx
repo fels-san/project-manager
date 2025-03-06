@@ -1,20 +1,3 @@
-import {
-  BarChart,
-  Bar,
-  Tooltip,
-  Legend,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  LineChart,
-  Line,
-  RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
-  Radar,
-} from "recharts";
-
 import { useAppSelector } from "../hooks";
 
 import {
