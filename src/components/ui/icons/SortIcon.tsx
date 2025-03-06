@@ -1,4 +1,6 @@
-export default function SortIcon({ isDescending }: { isDescending: boolean }) {
+import React from "react";
+
+const SortIcon = React.memo(({ isDescending }: { isDescending: boolean }) => {
   return isDescending ? (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -26,4 +28,6 @@ export default function SortIcon({ isDescending }: { isDescending: boolean }) {
       />
     </svg>
   );
-}
+});
+
+export default SortIcon;

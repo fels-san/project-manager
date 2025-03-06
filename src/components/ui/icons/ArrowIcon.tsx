@@ -1,4 +1,6 @@
-export default function ArrowIcon({ isOpen }: { isOpen: boolean }) {
+import React from "react";
+
+const ArrowIcon = React.memo(({ isOpen }: { isOpen: boolean }) => {
   return (
     <svg
       className={`ml-2 w-4 h-4 transform transition-transform ${
@@ -18,4 +20,6 @@ export default function ArrowIcon({ isOpen }: { isOpen: boolean }) {
       />
     </svg>
   );
-}
+});
+
+export default ArrowIcon;
