@@ -14,13 +14,23 @@ const router = createBrowserRouter(
       path: "/",
       element: <RootLayout />,
       children: [
-        { path: "/", element: <Home /> },
-        { path: "/project/new", element: <ProjectForm /> },
-        { path: "/project/:projectId", element: <Project /> },
-        { path: "/project/:projectId/edit", element: <ProjectForm /> },
-        { path: "/employee/:employeeName", element: <EmployeeProfile /> },
-        { path: "/employee/:employeeName/edit", element: <EditEmployee /> },
-        { path: "/statitic", element: <Statitic /> },
+        { index: true, element: <Home /> },
+        {
+          path: "project",
+          children: [
+            { path: "new", element: <ProjectForm /> },
+            { path: ":projectId", element: <Project /> },
+            { path: ":projectId/edit", element: <ProjectForm /> },
+          ],
+        },
+        {
+          path: "employee",
+          children: [
+            { path: ":employeeName", element: <EmployeeProfile /> },
+            { path: ":employeeName/edit", element: <EditEmployee /> },
+          ],
+        },
+        { path: "statitic", element: <Statitic /> },
       ],
     },
   ],
