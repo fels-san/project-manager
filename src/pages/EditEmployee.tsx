@@ -33,7 +33,8 @@ export default function EditEmployee() {
     setFormData((prev) => ({ ...prev, [field]: updatedValue }));
   }
 
-  function handleSave() {
+  function handleSave(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
     if (!formData.name) {
       // eslint-disable-next-line no-alert
       alert("Name are required");
@@ -44,7 +45,10 @@ export default function EditEmployee() {
   }
 
   return (
-    <div className="box-border w-full h-full flex flex-col pt-9 pb-10 pl-10 pr-44 bg-stone-50 overflow-y-scroll">
+    <form
+      onSubmit={handleSave}
+      className="box-border w-full h-full flex flex-col pt-9 pb-10 pl-10 pr-44 bg-stone-50 overflow-y-scroll"
+    >
       <InputField
         label="Name"
         defaultValue={formData.name}
@@ -82,13 +86,12 @@ export default function EditEmployee() {
       <div className="flex flex-row justify-end gap-3 mt-4">
         <Link to={`/employee/${employee.name}`}>Cancel</Link>
         <button
-          type="button"
-          onClick={handleSave}
+          type="submit"
           className="bg-stone-700 text-stone-50 rounded-md px-6 py-2"
         >
           Save
         </button>
       </div>
-    </div>
+    </form>
   );
 }
