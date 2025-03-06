@@ -164,7 +164,6 @@ export default function ProjectForm() {
         <Link to={project ? `/project/${project.id}` : "/"}>Cancel</Link>
         <button
           type="submit"
-          // onClick={handleSave}
           className="bg-stone-700 text-stone-50 rounded-md px-6 py-2"
         >
           Save

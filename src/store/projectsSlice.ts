@@ -4,11 +4,6 @@ import { arrayMove } from "@dnd-kit/sortable";
 import { Project, Task } from "../types/types";
 import { storedProjects } from "../data/data";
 
-// import localStorageHelper from '../localStorageHelper';
-
-// const storedProjects = [...(localStorageHelper.getProjects() || [])].reverse();
-// const storedProjects = <Project[]>[...[]].reverse();
-
 type projectsState = {
   projects: Project[];
 };
