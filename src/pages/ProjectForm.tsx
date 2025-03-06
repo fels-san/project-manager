@@ -8,15 +8,7 @@ import { useAppDispatch, useAppSelector } from "../hooks";
 
 import ListDisplay from "../components/ui/ListDisplay";
 import InputField from "../components/ui/InputField";
-
-function formatDate(date: string) {
-  if (!date) return "";
-  const d = new Date(date);
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
+import { formatDateISO } from "../utils/utils";
 
 export default function ProjectForm() {
   const dispatch = useAppDispatch();
@@ -39,8 +31,8 @@ export default function ProjectForm() {
   const [formData, setFormData] = useState({
     title: project ? project.title : "",
     description: project ? project.description : "",
-    dueDate: project ? formatDate(project.dueDate) : "",
-    startDate: project ? formatDate(project.startDate) : "",
+    dueDate: project ? formatDateISO(project.dueDate) : "",
+    startDate: project ? formatDateISO(project.startDate) : "",
   });
 
   const suggestionsList = employees.map((employee) => employee.name);

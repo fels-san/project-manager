@@ -4,6 +4,7 @@ import { useAppSelector } from "../../hooks";
 import ContextMenu from "../ui/ContextMenu";
 import EmployeeItem from "./EmployeeItem";
 import { Employee } from "../../types/types";
+import { getEmployeeProjectsCount } from "../../utils/utils";
 
 type EmployeesListProps = {
   selectedEmployees: string[];
@@ -74,11 +75,6 @@ export default function EmployeesList({
     };
   }, [contextMenu.isVisible, closeContextMenu]);
 
-  const getEmployeeProjectsCount = (employeeName: string) =>
-    projects.filter((project) =>
-      project.team.some((employee) => employee === employeeName)
-    ).length;
-
   return (
     <div className="w-full">
       <h2 className="text-stone-800 text-2xl font-bold my-4">
@@ -92,7 +88,7 @@ export default function EmployeesList({
             isSelected={selectedEmployees.includes(employee.name)}
             onSelect={onEmployeeSelection}
             onContextMenu={openContextMenu}
-            projectsCount={getEmployeeProjectsCount(employee.name)}
+            projectsCount={getEmployeeProjectsCount(employee.name, projects)}
           />
         ))}
       </div>

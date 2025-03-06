@@ -6,17 +6,9 @@ import { uiActions } from "../store/uiSlice";
 
 import ProjectTasks from "../components/tasks/ProjectTasks";
 import Dropdown from "../components/ui/Dropdown";
+import { formatDateLong } from "../utils/utils";
 
 export default function Project() {
-  function formatDate(date: Date) {
-    const options: Intl.DateTimeFormatOptions = {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    };
-    return date ? date.toLocaleDateString("en-US", options) : null;
-  }
-
   const dispatch = useAppDispatch();
   const projects = useAppSelector((state) => state.projects.projects);
 
@@ -68,8 +60,7 @@ export default function Project() {
       </header>
 
       <p className="text-stone-400 mb-3 italic">
-        {formatDate(new Date(project.startDate))} -{" "}
-        {formatDate(new Date(project.dueDate))}
+        {formatDateLong(project.startDate)} - {formatDateLong(project.dueDate)}
       </p>
       <p className="whitespace-pre-wrap">{project.description}</p>
       <p className="text-stone-400 mb-0 mt-4">

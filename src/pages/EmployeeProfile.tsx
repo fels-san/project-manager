@@ -5,6 +5,7 @@ import { projectsActions } from "../store/projectsSlice";
 import { useAppDispatch, useAppSelector } from "../hooks";
 
 import ProjectsList from "../components/lists/ProjectsList";
+import { formatDateAge } from "../utils/utils";
 
 export default function EmployeeProfile() {
   const dispatch = useAppDispatch();
@@ -29,39 +30,6 @@ export default function EmployeeProfile() {
       dispatch(projectsActions.deleteEmployeeFromProjects(employee.name));
       navigate("/");
     }
-  }
-
-  function formatDateAge(birthDate: Date | undefined) {
-    if (!birthDate) return null;
-
-    const now = new Date();
-
-    const age = now.getFullYear() - birthDate.getFullYear();
-    const hasBirthdayPassed =
-      now.getMonth() > birthDate.getMonth() ||
-      (now.getMonth() === birthDate.getMonth() &&
-        now.getDate() >= birthDate.getDate());
-    const finalAge = hasBirthdayPassed ? age : age - 1;
-
-    const months = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ];
-    const formattedDate = `${birthDate.getDate()} ${
-      months[birthDate.getMonth()]
-    }. ${birthDate.getFullYear()}`;
-
-    return `${formattedDate} (${finalAge} years old)`;
   }
 
   return (
