@@ -1,6 +1,6 @@
 # Project Manager
 
-Project management app built with **React**, **TypeScript**, **React Router**, **Redux**, **Recharts**, **dnd kit**, **Vite**, and **Tailwind CSS**. This app allows users to effectively manage projects and tasks, and provides some statistics.
+Project management app built with **React**, **TypeScript**, **React Router**, **Redux Toolkit**, **Recharts**, **dnd kit**, **Vite**, and **Tailwind CSS**. This app allows users to effectively manage projects and tasks, and provides some statistics.
 
 🔗 **Live Demo**: https://fels-san.github.io/project-manager/
 
